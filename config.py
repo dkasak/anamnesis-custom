@@ -19,10 +19,11 @@
 
 window_width = 250
 window_height = 400
-opacity = 0.8 
+opacity = 0.85
 list_background = "#000000"
 list_foreground = "#ffffff"
 list_background_selected = "#200000"
 list_foreground_selected = "#ffffff"
 list_width = 300
 max_clips = 60
+
