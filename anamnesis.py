@@ -18,7 +18,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import anamnesis_browser
+import browser
 import db
 import optparse
 import os
@@ -55,7 +55,7 @@ elif options.stop:
 	os.system("killall -9 anamnesis-daemon")
 
 elif options.browser:
-	anamnesis_browser.main()
+	browser.main()
 
 elif options.n:
 	if options.n:
