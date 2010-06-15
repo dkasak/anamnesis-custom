@@ -18,18 +18,30 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import anamnesis_browser
+import db
 import optparse
 import os
 import sys
 
+help = {
+  "start" : "starts anamnesis daemon",
+  "stop" : "stops anamnesis daemon",
+  "browser" : "opens anamnesis browser with clipboard history",
+  "list" : "prints the clipboard history last N values",
+  "filter" : "use keywords to filter the clips to be listed",
+  "add" : "adds a value to the clipboard",
+  "quiet" : "don't print status messages to stdout"
+}
+
 parser = optparse.OptionParser()
-parser.add_option("--start-daemon", help="starts anamnesis daemon", action="store_true", dest="start")
-parser.add_option("--stop-daemon", help="stops anamnesis daemon", action="store_true", dest="stop")
-parser.add_option("--browser", help="opens anamnesis browser with clipboard history", action="store_true")
-parser.add_option("-l", "--list", help="prints the clipboard history last N values", action="store", type="int", dest="n")
-parser.add_option("-a", "--add", help="adds a value to the clipboard", action="store", type="string", dest="clip")
-parser.add_option("-q", "--quiet", action="store_false", dest="verbose", default=True,
-                  help="don't print status messages to stdout")
+parser.add_option("--start", action="store_true", dest="start", help=help["start"])
+parser.add_option("--stop", action="store_true", dest="stop", help=help["stop"])
+parser.add_option("-b", "--browser", action="store_true", help=help["browser"])
+parser.add_option("-l", "--list", action="store", type="int", dest="n", help=help["list"])
+parser.add_option("--filter", action="store", type="string", dest="keywords", help=help["filter"])
+parser.add_option("-a", "--add", action="store", type="string", dest="clip", help=help["add"])
+# parser.add_option("-q", "--quiet", action="store_false", dest="verbose", default=True, help=help["quiet"])
 
 (options, args) = parser.parse_args()
 
@@ -43,5 +55,18 @@ elif options.stop:
 	os.system("killall -9 anamnesis-daemon")
 
 elif options.browser:
-	os.system("/usr/local/bin/anamnesis-browser &")
+	anamnesis_browser.main()
 
+elif options.n:
+	if options.n:
+		n = options.n
+	else:
+		n = 10
+	
+	print ' id | clip'
+	print '-------------------'
+	for clip in db.get_clips(n, options.keywords):
+		print clip[0], '|', clip[1]
+
+else:
+	parser.print_help()

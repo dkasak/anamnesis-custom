@@ -68,7 +68,7 @@ def get_last_clip():
 	except:
 		return None
 
-def get_clips(n, keywords):
+def get_clips(n, keywords=None):
 	initialize()
 
 	if keywords:
