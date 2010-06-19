@@ -23,13 +23,15 @@ pygtk.require('2.0')
 import gtk, gobject
 import db
 
+clip_database = db.ClipDatabase()
+
 last_text = ''
 
 def clip_callback(clipboard, text, data):
 	global last_text
 	if text != last_text:
 		last_text = text
-		db.insert_text(text)
+		clip_database.insert_text(text)
 
 def update_clipboard():
 	clipboard.request_text(clip_callback)

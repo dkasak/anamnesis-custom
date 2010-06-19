@@ -25,6 +25,8 @@ import config
 
 # ----------------------------------------------
 
+clip_database = db.ClipDatabase()
+
 key_escape  = gtk.gdk.keyval_from_name('Escape')
 key_up      = gtk.gdk.keyval_from_name('Up')
 key_down    = gtk.gdk.keyval_from_name('Down')
@@ -53,14 +55,14 @@ def get_clip(treeview, path):
 # user chooses the clip, copy to the clipboard and quit
 def row_activated(treeview, path, view_column, data=None):
 	text = get_clip(treeview, path).text
-	db.insert_text(text)
+	clip_database.insert_text(text)
 	gtk.clipboard_get(gtk.gdk.SELECTION_CLIPBOARD).set_text(text)
 	gtk.main_quit()
 
 # read clipboard history and returns a gtk.ListStore with the history elements
-def create_model(max_clips, keywords=None):
+def create_list_model(max_clips, keywords=None):
 	list_store = gtk.ListStore(gobject.TYPE_PYOBJECT)
-	clips = db.get_clips(max_clips, keywords)
+	clips = clip_database.get_clips(max_clips, keywords)
 	for clip in clips:
 		list_store.append([Clip(clip)])
 	return list_store
@@ -73,11 +75,15 @@ def exit_callback(widget, event, data=None):
 
 # the tooltip shows the clipboard data without removing the line breaks
 def query_tooltip(widget, x, y, keyboard_mode, tooltip):
-	path = widget.get_path_at_pos(x, y)[0]
-	text = get_clip(widget, path).text
-	tooltip.set_text(text)
-	widget.set_tooltip_row(tooltip, path)
-	# TODO: return True only if the text is not completely visible...
+	try:
+		path = widget.get_path_at_pos(x, y)[0]
+		text = get_clip(widget, path).text
+		text = text[:config.max_tooltip_size]
+		tooltip.set_text(text)
+		widget.set_tooltip_row(tooltip, path)
+		# TODO: return True only if the text is not completely visible...
+	except:
+		return False
 	return True
 
 # when a navigation key is pressed change focus to the list, if 'esc' quit,
@@ -98,7 +104,7 @@ def key_pressed(widget, event, data=None):
 # updates the clipboard list while editing the search box
 def search_changed(editable, data=None):
 	keywords = editable.get_text()
-	treeview.set_model(create_model(config.max_clips, keywords))
+	treeview.set_model(create_list_model(config.max_clips, keywords))
 	window.resize_children()
 
 #-----------------------------------------
@@ -108,6 +114,9 @@ def get_color(color_string):
 
 def main():
 	global treeview
+	global search_entry
+	global window
+	
 	cell_renderer = gtk.CellRendererText()
 	cell_renderer.set_property("background", config.list_background)
 	cell_renderer.set_property("foreground", config.list_foreground)
@@ -117,7 +126,7 @@ def main():
 	column.pack_start(cell_renderer, True)
 	column.set_cell_data_func(cell_renderer, cell_data_func)
 
-	model = create_model(config.max_clips)
+	model = create_list_model(config.max_clips)
 
 	treeview = gtk.TreeView(model)
 	treeview.set_model(model)

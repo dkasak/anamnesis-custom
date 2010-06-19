@@ -17,65 +17,54 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import config
 import os
 import sqlite3
 
-database_filename = os.getenv("HOME") + "/.anamnesis/database"
-
-connection = None
-cursor = None
-
-def initialize():
-	global connection
-	global cursor
-	global database_filename
-
-	try:
-		open(database_filename, 'a').close()
-	except Exception as exception:
-		print "[anamnesis] error on initialization:", exception
-		return
-	try:
-		connection = sqlite3.connect(database_filename)
-		cursor = connection.cursor()
-		cursor.execute("CREATE VIRTUAL TABLE clips USING fts3(text)")
-		connection.commit()
-	except:
-		pass
-
-initialize()
-
-def insert_text(text):
-	initialize()
-	if not text or text == get_last_clip():
-		return
+class ClipDatabase:
 	
-	remove_clip_from_text(text)
-	cursor.execute("INSERT INTO clips VALUES (?)", (str(text),))
-	connection.commit()
+	def __init__(self):
+		# try to create database if it does not exists yet
+		try:
+			open(config.database_file, 'a').close()
+		except Exception as exception:
+			print "[anamnesis] error on initialization:", exception
+			return
+		
+		# try to connect to the database
+		try:
+			self.connection = sqlite3.connect(config.database_file)
+			self.cursor = self.connection.cursor()
+			self.cursor.execute("CREATE VIRTUAL TABLE clips USING fts3(text)")
+			self.connection.commit()
+		except:
+			pass
 
-def remove_clip_from_text(text):
-	initialize()
-	if text:
-		cursor.execute('DELETE FROM clips WHERE text = ?', (str(text),))
-		connection.commit()
+	def insert_text(self, text):
+		if not text or text == self.get_last_clip():
+			return
+		
+		self.remove_clip_from_text(text)
+		self.cursor.execute("INSERT INTO clips VALUES (?)", (str(text),))
+		self.connection.commit()
 
-def get_last_clip():
-	initialize()
+	def remove_clip_from_text(self, text):
+		if text:
+			self.cursor.execute('DELETE FROM clips WHERE text = ?', (str(text),))
+			self.connection.commit()
 
-	try:
-		return get_clips(1)[0]
-	except:
-		return None
+	def get_last_clip(self):
+		try:
+			return self.get_clips(1)[0]
+		except:
+			return None
 
-def get_clips(n, keywords=None):
-	initialize()
+	def get_clips(self, n, keywords=None):
+		if keywords:
+			match = "* ".join(keywords.split(' ')) + "*"
+			self.cursor.execute('SELECT rowid, text FROM clips WHERE text MATCH (?) ORDER BY rowid DESC LIMIT ?', (match,n))
+		else:
+			self.cursor.execute('SELECT rowid, text FROM clips ORDER BY rowid DESC LIMIT ?', (n,))
 
-	if keywords:
-		match = "* ".join(keywords.split(' ')) + "*"
-		cursor.execute('SELECT rowid, text FROM clips WHERE text MATCH (?) ORDER BY rowid DESC LIMIT ?', (match,n))
-	else:
-		cursor.execute('SELECT rowid, text FROM clips ORDER BY rowid DESC LIMIT ?', (n,))
-
-	return [row for row in cursor]
+		return [row for row in self.cursor]
 

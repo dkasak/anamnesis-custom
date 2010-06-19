@@ -41,7 +41,6 @@ parser.add_option("-b", "--browser", action="store_true", help=help["browser"])
 parser.add_option("-l", "--list", action="store", type="int", dest="n", help=help["list"])
 parser.add_option("--filter", action="store", type="string", dest="keywords", help=help["filter"])
 parser.add_option("-a", "--add", action="store", type="string", dest="clip", help=help["add"])
-# parser.add_option("-q", "--quiet", action="store_false", dest="verbose", default=True, help=help["quiet"])
 
 (options, args) = parser.parse_args()
 
@@ -65,7 +64,7 @@ elif options.n:
 	
 	print ' id | clip'
 	print '-------------------'
-	for clip in db.get_clips(n, options.keywords):
+	for clip in db.ClipDatabase().get_clips(n, options.keywords):
 		print clip[0], '|', clip[1]
 
 else:
