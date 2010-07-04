@@ -33,13 +33,11 @@ def clip_callback(clipboard, text, data):
 		last_text = text
 		clip_database.insert_text(text)
 
-def update_clipboard():
+def owner_change(clipboard, event, data=None):
 	clipboard.request_text(clip_callback)
-	return True
 
 clipboard = gtk.clipboard_get(gtk.gdk.SELECTION_CLIPBOARD)
 clipboard.request_text(clip_callback)
-
-gobject.timeout_add(1000, update_clipboard)
+clipboard.connect("owner-change", owner_change)
 
 gtk.main()
