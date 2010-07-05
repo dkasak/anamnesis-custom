@@ -42,7 +42,7 @@ class Daemon:
 		try:
 			pid_file = open(config.pid_file, 'r')
 			pid = int(pid_file.read().strip())
-			os.kill(0, pid) # make sure exists a process with this pid
+			os.kill(pid, 0) # make sure exists a process with this pid
 		except:
 			pid = None
 		
@@ -115,6 +115,7 @@ class Daemon:
 class AnamnesisDaemon(Daemon):
 	
 	def __init__(self):
+		Daemon.__init__(self)
 		self.clip_database = db.ClipDatabase()
 		self.last_text = ''
 
