@@ -24,6 +24,12 @@ import sqlite3
 class ClipDatabase:
 	
 	def __init__(self):
+		# try to create configuration directory if it does not exists yet
+		try:
+			os.mkdir(config.config_dir)
+		except OSError:
+			pass
+		
 		# try to create database if it does not exists yet
 		try:
 			open(config.database_file, 'a').close()

@@ -70,8 +70,8 @@ class Daemon:
 			os.umask(0)
 			self.__fork_and_exit_parent()
 		
-		except:
-			self.logger.debug("failed to create daemon: %d (%s)\n" % (e.errno, e.strerror))
+		except Exception as exception:
+			self.logger.debug("failed to create daemon: %s" % exception)
 			return False
 		
 		atexit.register(self.__atexit_callback)
