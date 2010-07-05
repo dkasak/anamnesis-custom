@@ -19,7 +19,11 @@
 
 import os
 
-database_file = os.getenv("HOME") + "/.anamnesis/database"
+config_dir = os.getenv("HOME") + "/.anamnesis"
+
+database_file = config_dir + "/database"
+pid_file = config_dir + "/anamnesis.pid"
+log_file = config_dir + "/anamnesis.log"
 
 list_background = "#000000"
 list_foreground = "#ffffff"
@@ -27,7 +31,7 @@ list_background_selected = "#200000"
 list_foreground_selected = "#ffffff"
 list_width = 300
 
-max_clips = 60 # maximum number of clips to be shown in the screen
+max_clips = 1000
 max_tooltip_size = 6000 # maximum possible size of a tooltip in characters
 
 opacity = 0.85

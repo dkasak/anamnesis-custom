@@ -24,9 +24,13 @@ import optparse
 import os
 import sys
 
+import config
+import daemon
+
 help = {
   "start" : "starts anamnesis daemon",
   "stop" : "stops anamnesis daemon",
+  "restart" : "restarts anamnesis daemon",
   "browser" : "opens anamnesis browser with clipboard history",
   "list" : "prints the clipboard history last N values",
   "filter" : "use keywords to filter the clips to be listed",
@@ -37,6 +41,7 @@ help = {
 parser = optparse.OptionParser()
 parser.add_option("--start", action="store_true", dest="start", help=help["start"])
 parser.add_option("--stop", action="store_true", dest="stop", help=help["stop"])
+parser.add_option("--restart", action="store_true", dest="restart", help=help["restart"])
 parser.add_option("-b", "--browser", action="store_true", help=help["browser"])
 parser.add_option("-l", "--list", action="store", type="int", dest="n", help=help["list"])
 parser.add_option("--filter", action="store", type="string", dest="keywords", help=help["filter"])
@@ -48,10 +53,14 @@ if not options:
 	sys.exit()
 
 elif options.start:
-	os.system("/usr/local/bin/anamnesis-daemon &")
+	daemon.AnamnesisDaemon().start()
 
 elif options.stop:
-	os.system("killall -9 anamnesis-daemon")
+	daemon.AnamnesisDaemon().stop()
+
+elif options.restart:
+	daemon.AnamnesisDaemon().stop()
+	daemon.AnamnesisDaemon().start()
 
 elif options.browser:
 	browser.main()
