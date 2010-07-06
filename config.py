@@ -34,7 +34,7 @@ list_width = 300
 max_clips = 1000
 max_tooltip_size = 6000 # maximum possible size of a tooltip in characters
 
-opacity = 0.85
+opacity = 0.9
 
 window_width = 450
 window_height = 400
