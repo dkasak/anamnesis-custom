@@ -19,6 +19,8 @@
 
 import os
 
+version = "Anamnesis version 0.0.1"
+
 config_dir = os.getenv("HOME") + "/.anamnesis"
 
 database_file = config_dir + "/database"

@@ -38,7 +38,7 @@ help = {
   "quiet" : "don't print status messages to stdout"
 }
 
-parser = optparse.OptionParser()
+parser = optparse.OptionParser(version = config.version)
 parser.add_option("--start", action="store_true", dest="start", help=help["start"])
 parser.add_option("--stop", action="store_true", dest="stop", help=help["stop"])
 parser.add_option("--restart", action="store_true", dest="restart", help=help["restart"])

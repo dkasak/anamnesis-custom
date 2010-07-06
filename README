@@ -1,0 +1,76 @@
+
+DESCRIPTION
+
+Anamnesis is a clipboard manager. It stores all clipboard history and offers
+an easy interface to do a full-text search on the items of its history.
+
+
+INSTALLING
+
+The recommended installation have three steps:
+  1. copy the command-line to the system path
+  2. install the anamnesis daemon in the session start-up
+  3. create a keyboard shortcut to the graphic interface.
+
+There is no automatic tool to do this yet.
+
+1. To install anamnesis command line, create a symbolic link named 'anamnesis' in the
+   system path, pointing to anamnesis.py, for example:
+      > sudo ln -s /path/to/anamnesis.py /usr/bin/anamnesis
+
+2. Configure the following command to be executed on session start-up (System -> Preferences -> Session Apps):
+      > anamnesis --start
+
+3. Configure a shortcut to the graphic interface (System -> Preferences -> Keyboard Shortcuts):
+      > anamnesis --browse
+
+
+COMMAND LINE
+
+Usage: anamnesis [options]
+
+Options:
+  -h, --help           show this help message and exit
+  --start              starts anamnesis daemon
+  --stop               stops anamnesis daemon
+  --restart            restarts anamnesis daemon
+  -b, --browser        opens anamnesis browser with clipboard history
+  -l N, --list=N       prints the clipboard history last N values
+  --filter=KEYWORDS    use keywords to filter the clips to be listed
+  -a CLIP, --add=CLIP  adds a value to the clipboard
+
+Examples:
+
+  Starts the graphic user interface:
+      anamnesis --browser
+
+  Starts the anamnesis daemon:
+      anamnesis --start
+
+  Stops the anamnesis daemon:
+      anamnesis --stop
+
+  List the last 20 clipboard items:
+      anamnesis --list=20
+
+  List the last 5 items in the clipboard the has the keywords 'my' and 'search':
+      anamnesis --list=5 --filter="my search"
+
+  Adds a clipboard item (same as copying to the clipboard if the daemon is running):
+      anamnesis --add="hello, clipboard!"
+
+
+DEPENDENCIES
+
+* gtk
+* python
+* pygtk
+* sqlite
+
+
+AUTHOR
+
+Written by Fabio Guerra <fabiowguerra@users.sourceforge.net>
+
+Bugs should be reported on the project page:
+  https://sourceforge.net/projects/anamnesis/
