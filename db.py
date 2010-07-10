@@ -51,12 +51,12 @@ class ClipDatabase:
 			return
 		
 		self.remove_clip_from_text(text)
-		self.cursor.execute("INSERT INTO clips VALUES (?)", (str(text),))
+		self.cursor.execute("INSERT INTO clips VALUES (?)", (unicode(str(text)),))
 		self.connection.commit()
 
 	def remove_clip_from_text(self, text):
 		if text:
-			self.cursor.execute('DELETE FROM clips WHERE text = ?', (str(text),))
+			self.cursor.execute('DELETE FROM clips WHERE text = ?', (unicode(str(text)),))
 			self.connection.commit()
 
 	def get_last_clip(self):
@@ -67,7 +67,7 @@ class ClipDatabase:
 
 	def get_clips(self, n, keywords=None):
 		if keywords:
-			match = "* ".join(keywords.split(' ')) + "*"
+			match = unicode("* ".join(keywords.split(' ')) + "*")
 			self.cursor.execute('SELECT rowid, text FROM clips WHERE text MATCH (?) ORDER BY rowid DESC LIMIT ?', (match,n))
 		else:
 			self.cursor.execute('SELECT rowid, text FROM clips ORDER BY rowid DESC LIMIT ?', (n,))
