@@ -87,7 +87,7 @@ class Daemon:
 		self.logger.debug("anamnesis daemon started")
 		
 		# redirect stdin, stdout & stderr to '/dev/null'
-		dev_null = os.open("/dev/null", os.O_RDWR)
+		dev_null = os.open(os.devnull, os.O_RDWR)
 		os.dup2(dev_null, sys.stdin.fileno())
 		os.dup2(dev_null, sys.stdout.fileno())
 		os.dup2(dev_null, sys.stderr.fileno())

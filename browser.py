@@ -45,7 +45,7 @@ class Clip:
 	def get_row_text(self):
 		if not self.text:
 			return ''
-		return self.text.strip().replace('\n', ' ')
+		return ' '.join(self.text.strip().splitlines())
 
 def get_clip(treeview, path):
 	model = treeview.get_model()
