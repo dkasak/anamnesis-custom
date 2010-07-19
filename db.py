@@ -47,9 +47,11 @@ class ClipDatabase:
 			pass
 
 	def insert_text(self, text):
+		# avoid inserting a clip that is already on the clipboard
 		if not text or text == self.get_last_clip():
 			return
 		
+		# do not store duplicates
 		self.remove_clip_from_text(text)
 		self.cursor.execute("INSERT INTO clips VALUES (?)", (unicode(str(text)),))
 		self.connection.commit()

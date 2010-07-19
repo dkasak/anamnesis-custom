@@ -21,11 +21,21 @@ import os
 
 version = "Anamnesis version 0.0.1"
 
+# paths
+
 config_dir = os.getenv("HOME") + "/.anamnesis"
 
 database_file = config_dir + "/database"
 pid_file = config_dir + "/anamnesis.pid"
 log_file = config_dir + "/anamnesis.log"
+
+# limits for better performance
+
+max_clips = 1000
+max_tooltip_size = 6000 # maximum size of a tooltip in characters
+max_rowtext_size = 80 # maximum size of clipboard preview in the clipboard browser
+
+# user interface
 
 list_background = "#000000"
 list_foreground = "#ffffff"
@@ -33,10 +43,6 @@ list_background_selected = "#200000"
 list_foreground_selected = "#ffffff"
 list_width = 300
 
-max_clips = 1000
-max_tooltip_size = 6000 # maximum possible size of a tooltip in characters
-
 opacity = 0.9
-
 window_width = 450
 window_height = 400
