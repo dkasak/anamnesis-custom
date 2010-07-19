@@ -45,7 +45,7 @@ class Clip:
 	def get_row_text(self):
 		if not self.text:
 			return ''
-		return ' '.join(self.text[:max_rowtext_size].strip().splitlines())
+		return ' '.join(self.text[:config.max_rowtext_size].strip().splitlines())
 
 def get_clip(treeview, path):
 	model = treeview.get_model()

@@ -28,10 +28,11 @@ config_dir = os.getenv("HOME") + "/.anamnesis"
 database_file = config_dir + "/database"
 pid_file = config_dir + "/anamnesis.pid"
 log_file = config_dir + "/anamnesis.log"
+cfg_file = config_dir + "/anamnesis.cfg"
 
 # limits for better performance
 
-max_clips = 1000
+max_clips = 1000 # the browser will show only that number of clips, older clips will be accessible with text search
 max_tooltip_size = 6000 # maximum size of a tooltip in characters
 max_rowtext_size = 80 # maximum size of clipboard preview in the clipboard browser
 
