@@ -59,8 +59,9 @@ elif options.stop:
 	daemon.AnamnesisDaemon().stop()
 
 elif options.restart:
-	daemon.AnamnesisDaemon().stop()
-	daemon.AnamnesisDaemon().start()
+	anamnesis_daemon = daemon.AnamnesisDaemon()
+	anamnesis_daemon.stop()
+	anamnesis_daemon.start()
 
 elif options.browser:
 	browser.main()

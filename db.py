@@ -26,7 +26,7 @@ class ClipDatabase:
 	def __init__(self):
 		# try to create configuration directory if it does not exists yet
 		try:
-			os.mkdir(config.config_dir)
+			os.mkdir(config.home_dir)
 		except OSError:
 			pass
 		

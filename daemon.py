@@ -29,7 +29,9 @@ class Daemon:
 		self.logger = logging.getLogger('AnamnesisDaemonLogger')
 		self.logger.setLevel(logging.DEBUG)
 		
+		formatter = logging.Formatter(config.log_formatter)
 		handler = logging.handlers.RotatingFileHandler(config.log_file, maxBytes=40000, backupCount=2)
+		handler.setFormatter(formatter)
 		
 		self.logger.addHandler(handler)
 		
@@ -84,8 +86,6 @@ class Daemon:
 			if pid_file:
 				pid_file.close()
 		
-		self.logger.debug("anamnesis daemon started")
-		
 		# redirect stdin, stdout & stderr to '/dev/null'
 		dev_null = os.open(os.devnull, os.O_RDWR)
 		os.dup2(dev_null, sys.stdin.fileno())
@@ -101,7 +101,7 @@ class Daemon:
 		if pid:
 			try:
 				os.kill(pid, signal.SIGTERM)
-				self.logger.debug("anamnesis daemon stopped")
+				self.logger.debug("anamnesis daemon stopped (pid = %d)" % pid)
 			except:
 				self.logger.debug("cannot kill process from pid: %d" % pid)
 		else:
@@ -128,7 +128,7 @@ class AnamnesisDaemon(Daemon):
 		clipboard.request_text(self.__clip_callback)
 
 	def run(self):
-		self.logger.debug("anamnesis daemon started")
+		self.logger.debug("anamnesis daemon started with pid %d" % os.getpid())
 		clipboard = gtk.clipboard_get(gtk.gdk.SELECTION_CLIPBOARD)
 		clipboard.request_text(self.__clip_callback)
 		clipboard.connect("owner-change", self.__owner_change)

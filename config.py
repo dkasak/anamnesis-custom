@@ -18,32 +18,60 @@
 #
 
 import os
+import ConfigParser
 
 version = "Anamnesis version 0.0.1"
 
+home_dir = os.getenv("HOME") + "/.anamnesis"
+
+# configuration parser
+
+cfg_file = home_dir + "/anamnesis.cfg"
+cfg = ConfigParser.RawConfigParser()
+cfg.read(cfg_file)
+
+section = ""
+
+def get(key, default_value):
+	if cfg.has_option(section, key):
+		return cfg.get(section, key)
+	else:
+		return default_value
+
+def getint(key, default_value):
+	return int(get(key, default_value))
+
+def getfloat(key, default_value):
+	return float(get(key, default_value))
+
 # paths
 
-config_dir = os.getenv("HOME") + "/.anamnesis"
+section = "paths"
+database_file = get("database", home_dir + "/database")
+pid_file = get("pid", home_dir + "/anamnesis.pid")
+log_file = get("log", home_dir + "/anamnesis.log")
 
-database_file = config_dir + "/database"
-pid_file = config_dir + "/anamnesis.pid"
-log_file = config_dir + "/anamnesis.log"
-cfg_file = config_dir + "/anamnesis.cfg"
+# log
+
+section = "log"
+log_formatter = get("formatter", "%(asctime)s - %(message)s")
 
 # limits for better performance
 
-max_clips = 1000 # the browser will show only that number of clips, older clips will be accessible with text search
-max_tooltip_size = 6000 # maximum size of a tooltip in characters
-max_rowtext_size = 80 # maximum size of clipboard preview in the clipboard browser
+section = "limits"
+max_clips = getint("max_clips", 1000) # the browser will show only that number of clips, older clips will be accessible with text search
+max_tooltip_size = getint("max_tooltip_size", 6000) # maximum size of a tooltip in characters
+max_rowtext_size = getint("max_rowtext_size", 80) # maximum size of clipboard preview in the clipboard browser
 
 # user interface
 
-list_background = "#000000"
-list_foreground = "#ffffff"
-list_background_selected = "#200000"
-list_foreground_selected = "#ffffff"
-list_width = 300
+section = "ui"
+list_background = get("background", "#000000")
+list_foreground = get("foreground", "#ffffff")
+list_background_selected = get("background_selected", "#200000")
+list_foreground_selected = get("foreground_selected", "#ffffff")
+list_width = getint("list_width", 300)
 
-opacity = 0.9
-window_width = 450
-window_height = 400
+opacity = getfloat("opacity", 0.9)
+window_width = getint("window_width", 450)
+window_height = getint("window_height", 400)
