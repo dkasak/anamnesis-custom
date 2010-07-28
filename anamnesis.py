@@ -35,6 +35,8 @@ help = {
   "list" : "prints the clipboard history last N values",
   "filter" : "use keywords to filter the clips to be listed",
   "add" : "adds a value to the clipboard",
+  "remove" : "removes the clipboard element with the given id",
+  "brief" : "print only a brief version of long clipboard elements",
   "quiet" : "don't print status messages to stdout"
 }
 
@@ -45,12 +47,26 @@ parser.add_option("--restart", action="store_true", dest="restart", help=help["r
 parser.add_option("-b", "--browser", action="store_true", help=help["browser"])
 parser.add_option("-l", "--list", action="store", type="int", dest="n", help=help["list"])
 parser.add_option("--filter", action="store", type="string", dest="keywords", help=help["filter"])
-parser.add_option("-a", "--add", action="store", type="string", dest="clip", help=help["add"])
+parser.add_option("-a", "--add", action="store", type="string", dest="clip_to_add", help=help["add"])
+parser.add_option("--remove", action="store", type="int", dest="id_to_remove", help=help["remove"])
+parser.add_option("--brief", action="store_true", dest="brief", help=help["brief"])
 
 (options, args) = parser.parse_args()
 
 if not options:
 	sys.exit()
+
+if options.clip_to_add:
+	import pygtk
+	pygtk.require('2.0')
+	import gtk
+
+	db.ClipDatabase().insert_text(options.clip_to_add)
+	# TODO:
+	# gtk.clipboard_get(gtk.gdk.SELECTION_CLIPBOARD).set_text(options.clip_to_add)
+
+elif options.id_to_remove:
+	db.ClipDatabase().remove_clip_from_id(options.id_to_remove)
 
 elif options.start:
 	daemon.AnamnesisDaemon().start()
@@ -75,7 +91,13 @@ elif options.n:
 	print ' id | clip'
 	print '-------------------'
 	for clip in db.ClipDatabase().get_clips(n, options.keywords):
-		print clip[0], '|', clip[1]
+		
+		if options.brief:
+			clip_text = ' '.join(clip[1][:config.max_rowtext_size].strip().splitlines())
+		else:
+			clip_text = clip[1]
+			
+		print clip[0], '|', clip_text
 
 else:
 	parser.print_help()

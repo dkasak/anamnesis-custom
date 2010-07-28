@@ -61,6 +61,11 @@ class ClipDatabase:
 			self.cursor.execute('DELETE FROM clips WHERE text = ?', (unicode(str(text)),))
 			self.connection.commit()
 
+	def remove_clip_from_id(self, id):
+		if id:
+			self.cursor.execute('DELETE FROM clips WHERE rowid = ?', (int(id),))
+			self.connection.commit()
+
 	def get_last_clip(self):
 		try:
 			return self.get_clips(1)[0]
