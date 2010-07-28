@@ -1,0 +1,95 @@
+.\" Process this file with
+.\" groff -man -Tascii anamnesis.1
+.\"
+
+.TH ANAMNESIS 1 "JULY 2010"
+
+.SH NAME
+
+Anamnesis \- clipboard history manager
+
+
+.SH SYNOPSIS
+
+.B anamnesis
+[options]
+
+
+.SH DESCRIPTION
+
+.B Anamnesis
+is a clipboard manager. It stores all clipboard history and offers
+an easy interface to do a full-text search on the items of its history.
+
+
+.SH OPTIONS
+
+.TP
+.B -h, --help           
+show this help message and exit
+
+.TP
+.B --start              
+starts anamnesis daemon
+
+.TP
+.B --stop               
+stops anamnesis daemon
+
+.TP
+.B --restart            
+restarts anamnesis daemon
+
+.TP
+.B -b, --browser        
+opens anamnesis browser with clipboard history
+
+.TP
+.B -l N, --list=N       
+prints the clipboard history last N values
+
+.TP
+.B --filter=KEYWORDS    
+use keywords to filter the clips to be listed
+
+.TP
+.B -a CLIP, --add=CLIP  
+adds a value to the clipboard
+
+
+.SH EXAMPLES
+
+  Starts the graphic user interface:
+      anamnesis --browser
+
+  Starts the anamnesis daemon:
+      anamnesis --start
+
+  Stops the anamnesis daemon:
+      anamnesis --stop
+
+  List the last 20 clipboard items:
+      anamnesis --list=20
+
+  List the last 5 items in the clipboard the has the keywords 'my' and 'search':
+      anamnesis --list=5 --filter="my search"
+
+  Adds a clipboard item (same as copying to the clipboard if the daemon is running):
+      anamnesis --add="hello, clipboard!"
+
+
+.SH DEPENDENCIES
+
+* gtk
+* python
+* pygtk
+* sqlite
+
+
+.SH AUTHOR
+
+Written by Fabio Guerra <fabiowguerra@users.sourceforge.net>
+
+Bugs should be reported on the project page:
+  https://sourceforge.net/projects/anamnesis/
+
