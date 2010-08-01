@@ -30,6 +30,7 @@ COMMAND LINE
 Usage: anamnesis [options]
 
 Options:
+  --version            show program's version number and exit
   -h, --help           show this help message and exit
   --start              starts anamnesis daemon
   --stop               stops anamnesis daemon
@@ -38,6 +39,8 @@ Options:
   -l N, --list=N       prints the clipboard history last N values
   --filter=KEYWORDS    use keywords to filter the clips to be listed
   -a CLIP, --add=CLIP  adds a value to the clipboard
+  --remove=ID          removes the clipboard element with the given id
+  --brief              print only a brief version of long clipboard elements
 
 Examples:
 

@@ -19,10 +19,15 @@ Anamnesis \- clipboard history manager
 
 .B Anamnesis
 is a clipboard manager. It stores all clipboard history and offers
-an easy interface to do a full-text search on the items of its history.
+an easy interface to do a full-text search on it.
 
 
 .SH OPTIONS
+
+
+.TP
+.B --version
+show program's version number and exit
 
 .TP
 .B -h, --help           
@@ -55,6 +60,14 @@ use keywords to filter the clips to be listed
 .TP
 .B -a CLIP, --add=CLIP  
 adds a value to the clipboard
+
+.TP
+.B --remove=ID_TO_REMOVE
+removes the clipboard element with the given id
+
+.TP
+.B --brief
+print only a brief version of long clipboard elements
 
 
 .SH EXAMPLES
