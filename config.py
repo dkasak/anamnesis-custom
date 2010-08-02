@@ -20,7 +20,7 @@
 import os
 import ConfigParser
 
-version = "Anamnesis version 0.0.1"
+version = "Anamnesis version 1.0.0"
 
 home_dir = os.getenv("HOME") + "/.anamnesis"
 
