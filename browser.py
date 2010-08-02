@@ -22,6 +22,7 @@ pygtk.require('2.0')
 import gtk, gobject
 import db
 import config
+import clipboard
 
 # ----------------------------------------------
 
@@ -56,7 +57,8 @@ def get_clip(treeview, path):
 def row_activated(treeview, path, view_column, data=None):
 	text = get_clip(treeview, path).text
 	clip_database.insert_text(text)
-	gtk.clipboard_get(gtk.gdk.SELECTION_CLIPBOARD).set_text(text)
+	clipboard.set(text)
+	
 	gtk.main_quit()
 
 # read clipboard history and returns a gtk.ListStore with the history elements

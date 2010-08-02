@@ -57,13 +57,9 @@ if not options:
 	sys.exit()
 
 if options.clip_to_add:
-	import pygtk
-	pygtk.require('2.0')
-	import gtk
-
 	db.ClipDatabase().insert_text(options.clip_to_add)
-	# TODO:
-	# gtk.clipboard_get(gtk.gdk.SELECTION_CLIPBOARD).set_text(options.clip_to_add)
+	import clipboard
+	clipboard.set(options.clip_to_add)
 
 elif options.id_to_remove:
 	db.ClipDatabase().remove_clip_from_id(options.id_to_remove)

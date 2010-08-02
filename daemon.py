@@ -86,11 +86,23 @@ class Daemon:
 			if pid_file:
 				pid_file.close()
 		
-		# redirect stdin, stdout & stderr to '/dev/null'
+		
+		# redirect stdin to '/dev/null'
 		dev_null = os.open(os.devnull, os.O_RDWR)
 		os.dup2(dev_null, sys.stdin.fileno())
-		os.dup2(dev_null, sys.stdout.fileno())
-		os.dup2(dev_null, sys.stderr.fileno())
+		
+		# redirect stdout & stderr to logger
+		class LoggerRedirect:
+			def __init__(self, logger):
+				self.logger = logger
+			def write(self, msg):
+				msg = msg.rstrip('\n\r ')
+				if msg:
+					self.logger.debug(msg)
+		
+		redirect = LoggerRedirect(self.logger)
+		sys.stdout = redirect
+		sys.stderr = redirect
 		
 		self.run()
 		
@@ -119,17 +131,15 @@ class AnamnesisDaemon(Daemon):
 		self.clip_database = db.ClipDatabase()
 		self.last_text = ''
 
-	def __clip_callback(self, clipboard, text, data):
+	def clipboard_listener(self, text):
 		if self.last_text != text:
 			self.last_text = text
 			self.clip_database.insert_text(text)
-
-	def __owner_change(self, clipboard, event, data=None):
-		clipboard.request_text(self.__clip_callback)
-
+		
 	def run(self):
-		self.logger.debug("anamnesis daemon started with pid %d" % os.getpid())
-		clipboard = gtk.clipboard_get(gtk.gdk.SELECTION_CLIPBOARD)
-		clipboard.request_text(self.__clip_callback)
-		clipboard.connect("owner-change", self.__owner_change)
+		self.logger.debug("anamnesis daemon started (pid = %d)" % os.getpid())
+		
+		import clipboard
+		cb = clipboard.add_listener(self.clipboard_listener)
+		
 		gtk.main()
