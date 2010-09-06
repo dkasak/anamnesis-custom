@@ -20,9 +20,11 @@
 import pygtk
 pygtk.require('2.0')
 import gtk, gobject
-import db
-import config
+import time
+
 import clipboard
+import config
+import db
 
 # ----------------------------------------------
 
@@ -57,7 +59,14 @@ def get_clip(treeview, path):
 def row_activated(treeview, path, view_column, data=None):
 	text = get_clip(treeview, path).text
 	clip_database.insert_text(text)
-	clipboard.set(text)
+	clipboard.write(text)
+	
+	# need some time to set the clipboard properly before exitting the application
+	window.hide()
+	while gtk.events_pending():
+		gtk.main_iteration()
+	
+	time.sleep(0.5)
 	
 	gtk.main_quit()
 

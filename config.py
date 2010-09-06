@@ -20,7 +20,7 @@
 import os
 import ConfigParser
 
-version = "Anamnesis version 1.0.0"
+version = "Anamnesis version 1.0.1-dev"
 
 home_dir = os.getenv("HOME") + "/.anamnesis"
 
@@ -43,6 +43,9 @@ def getint(key, default_value):
 
 def getfloat(key, default_value):
 	return float(get(key, default_value))
+
+def getboolean(key, default_value):
+	return bool(get(key, default_value))
 
 # paths
 
@@ -75,3 +78,11 @@ list_width = getint("list_width", 300)
 opacity = getfloat("opacity", 0.9)
 window_width = getint("window_width", 450)
 window_height = getint("window_height", 400)
+
+# clipboard
+
+write_to_clipboard = getboolean("write_to_clipboard", True)
+write_to_primary = getboolean("write_to_primary", True)
+
+read_from_clipboard = getboolean("read_from_clipboard", True)
+read_from_primary = getboolean("read_from_primary", False)

@@ -23,6 +23,7 @@ import gtk, gobject
 import atexit, os, signal, sys
 import config, db
 import logging, logging.handlers
+import clipboard
 
 class Daemon:
 	def __init__(self):
@@ -129,17 +130,30 @@ class AnamnesisDaemon(Daemon):
 	def __init__(self):
 		Daemon.__init__(self)
 		self.clip_database = db.ClipDatabase()
-		self.last_text = ''
+		self.last_clipboard = ''
+		self.last_primary = ''
 
 	def clipboard_listener(self, text):
-		if self.last_text != text:
-			self.last_text = text
-			self.clip_database.insert_text(text)
+		if text and self.last_clipboard != text:
+			self.last_clipboard = text
+			if config.read_from_clipboard:
+				self.clip_database.insert_text(text)
 		
+		if not text and config.write_to_clipboard:
+				clipboard.write_to_selection("clipboard", self.last_clipboard)
+	
+	def primary_listener(self, text):
+		print "primary_listener -> %s" % text
+		if text and self.last_primary != text:
+			self.last_primary = text
+			if config.read_from_primary:
+				self.clip_database.insert_text(text)
+		
+		if not text and config.write_to_primary:
+				clipboard.write_to_selection("primary", self.last_primary)
+
 	def run(self):
 		self.logger.debug("anamnesis daemon started (pid = %d)" % os.getpid())
-		
-		import clipboard
-		cb = clipboard.add_listener(self.clipboard_listener)
-		
+		clipboard.add_listener("clipboard", self.clipboard_listener)
+		clipboard.add_listener("primary", self.primary_listener)
 		gtk.main()

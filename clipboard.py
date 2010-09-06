@@ -1,28 +1,52 @@
+import config
 import pygtk
 pygtk.require('2.0')
 import gtk
 
-def __clip_callback(clipboard, text, data):
-	for listener in listeners:
+listeners = { "clipboard": [], "primary": [] }
+
+def can_read_from_selection(type):
+	return (type == "clipboard" and config.read_from_clipboard) or \
+	       (type == "primary" and config.read_from_primary)
+
+def can_write_to_selection(type):
+	return (type == "clipboard" and config.write_to_clipboard) or \
+	       (type == "primary" and config.write_to_primary)
+
+def notify_listeners(type, text):
+	for listener in listeners[type]:
 		listener(text)
 
-def __owner_change(clipboard, event, data=None):
-	clipboard.request_text(__clip_callback)
+def add_listener(type, listener):
+	listeners[type].append(listener)
 
-listeners = []
+def callback_clipboard(clipboard, text, data):
+	notify_listeners("clipboard", text)
+def callback_primary(clipboard, text, data):
+	notify_listeners("primary", text)
 
-clipboard = gtk.clipboard_get(gtk.gdk.SELECTION_CLIPBOARD)
-clipboard.request_text(__clip_callback)
-clipboard.connect("owner-change", __owner_change)
+def __owner_change_clipboard(clipboard, event, data=None):
+	selection["clipboard"].request_text(callback_clipboard)
+def __owner_change_primary(clipboard, event, data=None):
+	selection["primary"].request_text(callback_primary)
 
-primary = gtk.clipboard_get(gtk.gdk.SELECTION_PRIMARY)
+def write_to_selection(type, text):
+	if text and can_write_to_selection(type):
+		selection[type].set_text(text)
+		selection[type].store()
 
-def add_listener(listener):
-	listeners.append(listener)
+def write(text):
+	write_to_selection("clipboard", text)
+	write_to_selection("primary", text)
 
-def set(text):
-	clipboard.set_text(text)
-	clipboard.store()
-	
-	primary.set_text(text)
-	primary.store()
+selection = {}
+
+if can_read_from_selection("clipboard") or can_write_to_selection("clipboard"):
+	selection["clipboard"] = gtk.clipboard_get(gtk.gdk.SELECTION_CLIPBOARD)
+	selection["clipboard"].request_text(callback_clipboard)
+	selection["clipboard"].connect("owner-change", __owner_change_clipboard)
+
+if can_read_from_selection("primary") or can_write_to_selection("primary"):
+	selection["primary"] = gtk.clipboard_get(gtk.gdk.SELECTION_PRIMARY)
+	selection["primary"].request_text(callback_primary)
+	selection["primary"].connect("owner-change", __owner_change_primary)
