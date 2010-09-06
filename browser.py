@@ -38,6 +38,7 @@ key_home    = gtk.gdk.keyval_from_name('Home')
 key_end     = gtk.gdk.keyval_from_name('End')
 key_pgup    = gtk.gdk.keyval_from_name('Page_Up')
 key_pgdown  = gtk.gdk.keyval_from_name('Page_Down')
+key_del     = gtk.gdk.keyval_from_name('Delete')
 
 # this class represents a single item in the clipboard history
 class Clip:
@@ -97,6 +98,11 @@ def query_tooltip(widget, x, y, keyboard_mode, tooltip):
 		return False
 	return True
 
+def update_treeview():
+	keywords = search_entry.get_text()
+	treeview.set_model(create_list_model(config.max_clips, keywords))
+	window.resize_children()
+
 # when a navigation key is pressed change focus to the list, if 'esc' quit,
 # otherwise focus the search entry
 def key_pressed(widget, event, data=None):
@@ -105,18 +111,24 @@ def key_pressed(widget, event, data=None):
 	
 	if event.keyval == key_escape:
 		gtk.main_quit()
+	
+	elif event.keyval == key_del and treeview.is_focus():
+		model, iter = treeview.get_selection().get_selected()
+		clip_id = model.get(iter,0)[0].rowid
+		clip_database.remove_clip_from_id(clip_id)
+		update_treeview()
+	
 	elif event.keyval in [key_up, key_down, key_enter, key_pgup, key_pgdown, key_home, key_end]:
 		if not treeview.is_focus():
 			treeview.grab_focus()
+	
 	else:
 		if not search_entry.is_focus():
 			search_entry.grab_focus()
 
 # updates the clipboard list while editing the search box
 def search_changed(editable, data=None):
-	keywords = editable.get_text()
-	treeview.set_model(create_list_model(config.max_clips, keywords))
-	window.resize_children()
+	update_treeview()
 
 #-----------------------------------------
 
