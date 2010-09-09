@@ -36,6 +36,7 @@ Options:
   --stop               stops anamnesis daemon
   --restart            restarts anamnesis daemon
   -b, --browser        opens anamnesis browser with clipboard history
+  --cleanup            performs a cleanup on the clipboard database
   -l N, --list=N       prints the clipboard history last N values
   --filter=KEYWORDS    use keywords to filter the clips to be listed
   -a CLIP, --add=CLIP  adds a value to the clipboard
