@@ -58,20 +58,23 @@ def get_clip(treeview, path):
 
 # user chooses the clip, copy to the clipboard and quit
 def row_activated(treeview, path, view_column, data=None):
-	text = get_clip(treeview, path).text
-	clip_database.insert_text(text)
-	clipboard.write(text)
 	
-	# need some time to set the clipboard properly before exitting the application
+	# hide gui
 	window.hide()
 	while gtk.events_pending():
 		gtk.main_iteration()
 	
-	time.sleep(0.5)
+	# get data, insert in database and write to clipboard
+	clip = get_clip(treeview, path)
+	clip_database.insert_text(clip.text, clip.rowid)
+	clipboard.write(clip.text)
+	
+	# need some time to set the clipboard properly before exitting the application
+	time.sleep(1)
 	
 	gtk.main_quit()
 
-# read clipboard history and returns a gtk.ListStore with the history elements
+# returns a gtk.ListStore with the clipboard history
 def create_list_model(max_clips, keywords=None):
 	list_store = gtk.ListStore(gobject.TYPE_PYOBJECT)
 	clips = clip_database.get_clips(max_clips, keywords)

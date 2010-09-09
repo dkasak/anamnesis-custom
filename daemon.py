@@ -153,6 +153,9 @@ class AnamnesisDaemon(Daemon):
 				clipboard.write_to_selection("primary", self.last_primary)
 
 	def run(self):
+		if config.cleanup_on_start:
+			self.clip_database.cleanup()
+		
 		self.logger.debug("anamnesis daemon started (pid = %d)" % os.getpid())
 		clipboard.add_listener("clipboard", self.clipboard_listener)
 		clipboard.add_listener("primary", self.primary_listener)

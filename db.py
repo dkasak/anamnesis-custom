@@ -34,7 +34,7 @@ class ClipDatabase:
 		try:
 			open(config.database_file, 'a').close()
 		except Exception as exception:
-			print "[anamnesis] error on initialization:", exception
+			print "error on database initialization: %s" % str(exception)
 			return
 		
 		# try to connect to the database
@@ -46,13 +46,17 @@ class ClipDatabase:
 		except:
 			pass
 
-	def insert_text(self, text):
+	def insert_text(self, text, id = None):
 		# avoid inserting a clip that is already on the clipboard
 		if not text or text == self.get_last_clip():
 			return
-		
+
 		# do not store duplicates
-		self.remove_clip_from_text(text)
+		if id:
+			self.remove_clip_from_id(id) # faster
+		else:
+			self.remove_clip_from_text(text) # slower, need a table full-scan
+	
 		self.cursor.execute("INSERT INTO clips VALUES (?)", (unicode(str(text)),))
 		self.connection.commit()
 
@@ -65,6 +69,28 @@ class ClipDatabase:
 		if id:
 			self.cursor.execute('DELETE FROM clips WHERE rowid = ?', (int(id),))
 			self.connection.commit()
+	
+	def verify_history_size(self):
+		try:
+			delete_count = self.get_number_of_clips() - config.max_history_storage_count
+			
+			if delete_count <= 0:
+				return
+			
+			self.cursor.execute('SELECT rowid FROM clips ORDER BY rowid LIMIT ?', (delete_count,))
+			
+			for row in self.cursor:
+				self.cursor.execute('DELETE FROM clips WHERE rowid = ?', (int(row[0]),))
+			
+			self.connection.commit()
+		
+		except Exception as exception:
+			print "error verifying the maximum history element count: %s", str(exception)
+	
+	def cleanup(self):
+		self.verify_history_size()
+		self.cursor.execute('VACUUM')
+		self.connection.commit()
 
 	def get_last_clip(self):
 		try:
@@ -81,3 +107,6 @@ class ClipDatabase:
 
 		return [row for row in self.cursor]
 
+	def get_number_of_clips(self):
+		self.cursor.execute('SELECT count(*) FROM clips')
+		return self.cursor.fetchone()[0]

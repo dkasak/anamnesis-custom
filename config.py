@@ -65,6 +65,7 @@ section = "limits"
 max_clips = getint("max_clips", 1000) # the browser will show only that number of clips, older clips will be accessible with text search
 max_tooltip_size = getint("max_tooltip_size", 6000) # maximum size of a tooltip in characters
 max_rowtext_size = getint("max_rowtext_size", 80) # maximum size of clipboard preview in the clipboard browser
+max_history_storage_count = getint("max_history_storage_count", 20) # maximum number of clips that could be stored, if necessary the oldest clips will be removed 
 
 # user interface
 
@@ -81,8 +82,14 @@ window_height = getint("window_height", 400)
 
 # clipboard
 
+section = "clipboard"
 write_to_clipboard = getboolean("write_to_clipboard", True)
 write_to_primary = getboolean("write_to_primary", True)
 
 read_from_clipboard = getboolean("read_from_clipboard", True)
 read_from_primary = getboolean("read_from_primary", False)
+
+# database
+
+section = "database"
+cleanup_on_start = getboolean("cleanup_on_start", True) # performs a cleanup when the daemon is started
