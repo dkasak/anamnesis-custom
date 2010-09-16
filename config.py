@@ -17,42 +17,49 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os
+import os, os.path
 import ConfigParser
+from xdg.BaseDirectory import *
 
 version = "Anamnesis version 1.0.1-dev"
 
-home_dir = os.getenv("HOME") + "/.anamnesis"
+config_dir = os.path.join(xdg_config_home, "anamnesis")
+data_dir = os.path.join(xdg_data_home, "anamnesis")
 
 # configuration parser
 
-cfg_file = home_dir + "/anamnesis.cfg"
+cfg_file = os.path.join(config_dir, "anamnesis.cfg")
 cfg = ConfigParser.RawConfigParser()
 cfg.read(cfg_file)
 
 section = ""
 
+# search the configuration file for the given key, returns the found value if it exists,
+# otherwise return the default_value
 def get(key, default_value):
 	if cfg.has_option(section, key):
 		return cfg.get(section, key)
 	else:
 		return default_value
 
+# search an integer value on the configuration file
 def getint(key, default_value):
 	return int(get(key, default_value))
 
+# search a floating point number on the configuration file
 def getfloat(key, default_value):
 	return float(get(key, default_value))
 
+# search a boolean value on the configuration file
 def getboolean(key, default_value):
 	return bool(get(key, default_value))
 
 # paths
 
 section = "paths"
-database_file = get("database", home_dir + "/database")
-pid_file = get("pid", home_dir + "/anamnesis.pid")
-log_file = get("log", home_dir + "/anamnesis.log")
+database_file = get("database", os.path.join(data_dir, "database"))
+pid_file = get("pid", os.path.join(data_dir, "anamnesis.pid"))
+log_file = get("log", os.path.join(data_dir, "anamnesis.log"))
 
 # log
 
@@ -62,10 +69,10 @@ log_formatter = get("formatter", "%(asctime)s - %(message)s")
 # limits for better performance
 
 section = "limits"
-max_clips = getint("max_clips", 1000) # the browser will show only that number of clips, older clips will be accessible with text search
+max_clips = getint("max_clips", 100) # the browser will show only that number of clips, older clips will be accessible with text search
 max_tooltip_size = getint("max_tooltip_size", 6000) # maximum size of a tooltip in characters
-max_rowtext_size = getint("max_rowtext_size", 80) # maximum size of clipboard preview in the clipboard browser
-max_history_storage_count = getint("max_history_storage_count", 20) # maximum number of clips that could be stored, if necessary the oldest clips will be removed 
+max_rowtext_size = getint("max_rowtext_size", 80) # maximum number of characters shown for each clipboard item on the gui
+max_history_storage_count = getint("max_history_storage_count", 10000) # maximum number of clips that could be stored, if necessary the oldest clips will be removed
 
 # user interface
 
@@ -77,8 +84,11 @@ list_foreground_selected = get("foreground_selected", "#ffffff")
 list_width = getint("list_width", 300)
 
 opacity = getfloat("opacity", 0.9)
+hide_window_decoration = getint("hide_window_decoration", False)
+
 window_width = getint("window_width", 450)
 window_height = getint("window_height", 400)
+window_background = get("window_background", "#000000")
 
 # clipboard
 
@@ -93,3 +103,4 @@ read_from_primary = getboolean("read_from_primary", False)
 
 section = "database"
 cleanup_on_start = getboolean("cleanup_on_start", True) # performs a cleanup when the daemon is started
+

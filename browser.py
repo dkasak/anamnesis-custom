@@ -99,6 +99,7 @@ def query_tooltip(widget, x, y, keyboard_mode, tooltip):
 		# TODO: return True only if the text is not completely visible...
 	except:
 		return False
+
 	return True
 
 def update_treeview():
@@ -107,7 +108,7 @@ def update_treeview():
 	window.resize_children()
 
 # when a navigation key is pressed change focus to the list, if 'esc' quit,
-# otherwise focus the search entry
+# if 'del' remove it, otherwise focus the search entry
 def key_pressed(widget, event, data=None):
 	global treeview
 	global search_entry
@@ -138,15 +139,61 @@ def search_changed(editable, data=None):
 def get_color(color_string):
 	return treeview.get_colormap().alloc_color(color_string)
 
+def apply_cell_renderer_configuration(cell_renderer):
+
+	if config.list_background:
+		cell_renderer.set_property("background", config.list_background)
+
+	if config.list_foreground:
+		cell_renderer.set_property("foreground", config.list_foreground)
+
+	if config.list_width:
+		cell_renderer.set_property("width", config.list_width)
+
+def apply_treeview_configuration(treeview):
+
+	treeview_style = treeview.get_style().copy()
+
+	if config.list_background:
+		treeview_style.base[gtk.STATE_NORMAL]   = get_color(config.list_background)
+
+	if config.list_background_selected:
+		treeview_style.base[gtk.STATE_SELECTED] = get_color(config.list_background_selected)
+
+	if config.list_foreground:
+		treeview_style.fg[gtk.STATE_NORMAL]     = get_color(config.list_foreground)
+
+	if config.list_foreground_selected:
+		treeview_style.fg[gtk.STATE_SELECTED]   = get_color(config.list_foreground_selected)
+
+	treeview.set_style(treeview_style)
+
+def apply_window_configuration(window):
+
+	if config.window_width and config.window_height:
+		window.set_default_size(config.window_width, config.window_height)
+
+	if config.opacity < 0.999:
+		window.set_opacity(config.opacity)
+
+	if not config.hide_window_decoration:
+		window.set_decorated(False)
+
+	window_style = window.get_style().copy()
+
+	if config.window_background:
+		window_style.bg[gtk.STATE_NORMAL] = get_color(config.window_background)
+
+	window.set_style(window_style)
+
 def main():
 	global treeview
 	global search_entry
 	global window
 	
 	cell_renderer = gtk.CellRendererText()
-	cell_renderer.set_property("background", config.list_background)
-	cell_renderer.set_property("foreground", config.list_foreground)
-	cell_renderer.set_property("width", config.list_width)
+
+	apply_cell_renderer_configuration(cell_renderer)
 
 	column = gtk.TreeViewColumn()
 	column.pack_start(cell_renderer, True)
@@ -162,12 +209,7 @@ def main():
 	treeview.connect('query-tooltip', query_tooltip)
 	treeview.connect('row-activated', row_activated)
 
-	treeview_style = treeview.get_style().copy()
-	treeview_style.base[gtk.STATE_NORMAL]   = get_color(config.list_background)
-	treeview_style.base[gtk.STATE_SELECTED] = get_color(config.list_background_selected)
-	treeview_style.fg[gtk.STATE_NORMAL]     = get_color(config.list_foreground)
-	treeview_style.fg[gtk.STATE_SELECTED]   = get_color(config.list_foreground_selected)
-	treeview.set_style(treeview_style)
+	apply_treeview_configuration(treeview)
 
 	scrolled_window = gtk.ScrolledWindow()
 	scrolled_window.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -182,17 +224,14 @@ def main():
 
 	window = gtk.Window(gtk.WINDOW_TOPLEVEL)
 	window.add(vbox)
-	window.set_default_size(config.window_width, config.window_height)
 	window.set_position(gtk.WIN_POS_CENTER)
-	window.set_opacity(config.opacity)
-	window.set_decorated(False)
+
 	window.connect("delete_event", exit_callback)
 	window.connect("focus-out-event", exit_callback)
 	window.connect("key-press-event", key_pressed)
 
-	window_style = window.get_style().copy()
-	window_style.bg[gtk.STATE_NORMAL] = get_color("#000000")
-	window.set_style(window_style)
+	apply_window_configuration(window)
+
 	window.show_all()
 
 	gtk.main()
