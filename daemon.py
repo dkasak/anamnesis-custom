@@ -143,7 +143,6 @@ class AnamnesisDaemon(Daemon):
 				clipboard.write_to_selection("clipboard", self.last_clipboard)
 	
 	def primary_listener(self, text):
-		print "primary_listener -> %s" % text
 		if text and self.last_primary != text:
 			self.last_primary = text
 			if config.read_from_primary:
