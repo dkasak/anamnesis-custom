@@ -1,0 +1,21 @@
+Version 1.0.1 - 2010-09-18
+
+	* Changed the config and data paths to conform the XDG standard
+
+	* Limiting the maximum history size
+
+	* Included option to cleanup the database
+
+	* Small performance improvements
+
+	* Implemented deletion of clip from database pressing delete from clip row
+
+	* Added config options to enable/disable read/write from primary and clipboard selections
+
+	* Added a config option to show/hide the window decoration on the gui
+
+
+Version 1.0.0 - 2010-08-01
+
+	* First version of Anamnesis
+

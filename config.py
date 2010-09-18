@@ -21,7 +21,7 @@ import os, os.path
 import ConfigParser
 from xdg.BaseDirectory import *
 
-version = "Anamnesis version 1.0.1-dev"
+version = "Anamnesis version 1.0.1"
 
 config_dir = os.path.join(xdg_config_home, "anamnesis")
 data_dir = os.path.join(xdg_data_home, "anamnesis")
