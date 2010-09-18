@@ -147,8 +147,8 @@ def apply_cell_renderer_configuration(cell_renderer):
 	if config.list_foreground:
 		cell_renderer.set_property("foreground", config.list_foreground)
 
-	if config.list_width:
-		cell_renderer.set_property("width", config.list_width)
+	if config.window_width:
+		cell_renderer.set_property("width", config.window_width)
 
 def apply_treeview_configuration(treeview):
 
@@ -176,7 +176,7 @@ def apply_window_configuration(window):
 	if config.opacity < 0.999:
 		window.set_opacity(config.opacity)
 
-	if not config.hide_window_decoration:
+	if config.hide_window_decoration:
 		window.set_decorated(False)
 
 	window_style = window.get_style().copy()

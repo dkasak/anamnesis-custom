@@ -30,9 +30,15 @@ class Daemon:
 		self.logger = logging.getLogger('AnamnesisDaemonLogger')
 		self.logger.setLevel(logging.DEBUG)
 		
-		formatter = logging.Formatter(config.log_formatter)
-		handler = logging.handlers.RotatingFileHandler(config.log_file, maxBytes=40000, backupCount=2)
-		handler.setFormatter(formatter)
+		if config.log_activated:
+			formatter = logging.Formatter(config.log_formatter)
+			handler = logging.handlers.RotatingFileHandler(config.log_file, maxBytes=40000, backupCount=2)
+			handler.setFormatter(formatter)
+		else:
+			class NullHandler(logging.Handler):
+				def emit(self, record):
+					pass
+			handler = NullHandler()
 		
 		self.logger.addHandler(handler)
 		
@@ -139,6 +145,7 @@ class AnamnesisDaemon(Daemon):
 			if config.read_from_clipboard:
 				self.clip_database.insert_text(text)
 		
+		# if the clipboard was erased, restore the last value
 		if not text and config.write_to_clipboard:
 				clipboard.write_to_selection("clipboard", self.last_clipboard)
 	
@@ -148,6 +155,7 @@ class AnamnesisDaemon(Daemon):
 			if config.read_from_primary:
 				self.clip_database.insert_text(text)
 		
+		# if the primary was erased, restore the last value
 		if not text and config.write_to_primary:
 				clipboard.write_to_selection("primary", self.last_primary)
 
@@ -159,3 +167,4 @@ class AnamnesisDaemon(Daemon):
 		clipboard.add_listener("clipboard", self.clipboard_listener)
 		clipboard.add_listener("primary", self.primary_listener)
 		gtk.main()
+

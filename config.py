@@ -57,14 +57,15 @@ def getboolean(key, default_value):
 # paths
 
 section = "paths"
-database_file = get("database", os.path.join(data_dir, "database"))
-pid_file = get("pid", os.path.join(data_dir, "anamnesis.pid"))
-log_file = get("log", os.path.join(data_dir, "anamnesis.log"))
+database_file = get("database", os.path.join(data_dir, "database")) # database location
+pid_file = get("pid", os.path.join(data_dir, "anamnesis.pid")) # pidfile location
+log_file = get("log", os.path.join(data_dir, "anamnesis.log")) # log location
 
 # log
 
 section = "log"
-log_formatter = get("formatter", "%(asctime)s - %(message)s")
+log_activated = False # if true, log messages to a file, otherwise does not write logs
+log_formatter = get("formatter", "%(asctime)s - %(message)s") # formatter used to write the log messages
 
 # limits for better performance
 
@@ -77,27 +78,26 @@ max_history_storage_count = getint("max_history_storage_count", 10000) # maximum
 # user interface
 
 section = "ui"
-list_background = get("background", "#000000")
-list_foreground = get("foreground", "#ffffff")
-list_background_selected = get("background_selected", "#200000")
-list_foreground_selected = get("foreground_selected", "#ffffff")
-list_width = getint("list_width", 300)
+list_background = get("background", "#000000") # bg color for the list of clipboard items
+list_foreground = get("foreground", "#ffffff") # fg color for the list of clipboard items
+list_background_selected = get("background_selected", "#200000") # bg color of the selected item
+list_foreground_selected = get("foreground_selected", "#ffffff") # fg color of the selected item
 
-opacity = getfloat("opacity", 0.9)
-hide_window_decoration = getint("hide_window_decoration", False)
+opacity = getfloat("opacity", 0.9) # opacity of the window, must be between 0 and 1. Choose 1 for no transparency.
+hide_window_decoration = getint("hide_window_decoration", True) # enable to hide the window title and borders
 
-window_width = getint("window_width", 450)
-window_height = getint("window_height", 400)
-window_background = get("window_background", "#000000")
+window_width = getint("window_width", 500) # window width
+window_height = getint("window_height", 500) # window height
+window_background = get("window_background", "#000000") # window bg color
 
 # clipboard
 
 section = "clipboard"
-write_to_clipboard = getboolean("write_to_clipboard", True)
-write_to_primary = getboolean("write_to_primary", True)
+write_to_clipboard = getboolean("write_to_clipboard", True) # enable to write on the clipboard selection
+write_to_primary = getboolean("write_to_primary", True) # enable to write on the primary selection
 
-read_from_clipboard = getboolean("read_from_clipboard", True)
-read_from_primary = getboolean("read_from_primary", False)
+read_from_clipboard = getboolean("read_from_clipboard", True) # enable to read/store values from the clipboard
+read_from_primary = getboolean("read_from_primary", False) # enable to read/store values from the primary selection
 
 # database
 
