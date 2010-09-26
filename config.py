@@ -21,16 +21,25 @@ import os, os.path
 import ConfigParser
 from xdg.BaseDirectory import *
 
-version = "Anamnesis version 1.0.1"
+version = "Anamnesis version 1.0.2-dev"
 
 config_dir = os.path.join(xdg_config_home, "anamnesis")
 data_dir = os.path.join(xdg_data_home, "anamnesis")
 
+cfg_filename = "anamnesis.cfg"
+
 # configuration parser
 
-cfg_file = os.path.join(config_dir, "anamnesis.cfg")
+# TODO test reading from several cfg files
+cfg_file = os.path.join(config_dir, cfg_filename)
+
+cfg_files = [cfg_file]
+for dir in xdg_data_dirs:
+	directory = os.path.expanduser(dir)
+	cfg_files += [os.path.join(directory, cfg_filename)]
+
 cfg = ConfigParser.RawConfigParser()
-cfg.read(cfg_file)
+cfg.read(cfg_files)
 
 section = ""
 
@@ -64,7 +73,7 @@ log_file = get("log", os.path.join(data_dir, "anamnesis.log")) # log location
 # log
 
 section = "log"
-log_activated = False # if true, log messages to a file, otherwise does not write logs
+log_activated = getboolean("activated", True) # if true, log messages to a file, otherwise does not write logs
 log_formatter = get("formatter", "%(asctime)s - %(message)s") # formatter used to write the log messages
 
 # limits for better performance
@@ -78,10 +87,10 @@ max_history_storage_count = getint("max_history_storage_count", 10000) # maximum
 # user interface
 
 section = "ui"
-list_background = get("background", "#000000") # bg color for the list of clipboard items
-list_foreground = get("foreground", "#ffffff") # fg color for the list of clipboard items
-list_background_selected = get("background_selected", "#200000") # bg color of the selected item
-list_foreground_selected = get("foreground_selected", "#ffffff") # fg color of the selected item
+list_background = get("list_background", "#000000") # bg color for the list of clipboard items
+list_foreground = get("list_foreground", "#ffffff") # fg color for the list of clipboard items
+list_background_selected = get("list_background_selected", "#200000") # bg color of the selected item
+list_foreground_selected = get("list_foreground_selected", "#ffffff") # fg color of the selected item
 
 opacity = getfloat("opacity", 0.9) # opacity of the window, must be between 0 and 1. Choose 1 for no transparency.
 hide_window_decoration = getint("hide_window_decoration", True) # enable to hide the window title and borders
