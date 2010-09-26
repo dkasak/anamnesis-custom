@@ -30,13 +30,13 @@ cfg_filename = "anamnesis.cfg"
 
 # configuration parser
 
-# TODO test reading from several cfg files
-cfg_file = os.path.join(config_dir, cfg_filename)
+cfg_files = [os.path.join(config_dir, cfg_filename)]
 
-cfg_files = [cfg_file]
 for dir in xdg_data_dirs:
-	directory = os.path.expanduser(dir)
+	directory = os.path.join(os.path.expanduser(dir), "anamnesis")
 	cfg_files += [os.path.join(directory, cfg_filename)]
+
+cfg_files.reverse()
 
 cfg = ConfigParser.RawConfigParser()
 cfg.read(cfg_files)
@@ -93,7 +93,7 @@ list_background_selected = get("list_background_selected", "#200000") # bg color
 list_foreground_selected = get("list_foreground_selected", "#ffffff") # fg color of the selected item
 
 opacity = getfloat("opacity", 0.9) # opacity of the window, must be between 0 and 1. Choose 1 for no transparency.
-hide_window_decoration = getint("hide_window_decoration", True) # enable to hide the window title and borders
+hide_window_decoration = getboolean("hide_window_decoration", True) # enable to hide the window title and borders
 
 window_width = getint("window_width", 500) # window width
 window_height = getint("window_height", 500) # window height
