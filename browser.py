@@ -56,23 +56,32 @@ def get_clip(treeview, path):
 	iter = model.get_iter(path)
 	return model.get_value(iter, 0)
 
-# user chooses the clip, copy to the clipboard and quit
-def row_activated(treeview, path, view_column, data=None):
-	
-	# hide gui
+# hides the window, without killing the application
+def hide_window():
 	window.hide()
 	while gtk.events_pending():
 		gtk.main_iteration()
 	
-	# get data, insert in database and write to clipboard
+# quit from gtk application
+def quit():
+	gtk.main_quit()
+
+# user chooses the clip, copy to the clipboard and quit
+def row_activated(treeview, path, view_column, data=None):
+	
+	# make window invisible to the user
+	hide_window()
+	
+	#  insert text in database and write to clipboard
 	clip = get_clip(treeview, path)
 	clip_database.insert_text(clip.text, clip.rowid)
 	clipboard.write(clip.text)
 	
-	# need some time to set the clipboard properly before exitting the application
+	# may need some time to set the clipboard properly before exiting the application
+	# TODO make this time configurable
 	time.sleep(1)
 	
-	gtk.main_quit()
+	quit()
 
 # returns a gtk.ListStore with the clipboard history
 def create_list_model(max_clips, keywords=None):
@@ -86,7 +95,7 @@ def cell_data_func(column, cell, model, iter, user_data=None):
 	cell.set_property('text', model.get_value(iter, 0).get_row_text())
 
 def exit_callback(widget, event, data=None):
-	gtk.main_quit()
+	quit()
 
 # the tooltip shows the clipboard data without removing the line breaks
 def query_tooltip(widget, x, y, keyboard_mode, tooltip):
