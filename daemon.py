@@ -147,7 +147,7 @@ class AnamnesisDaemon(Daemon):
 		
 		# if the clipboard was erased, restore the last value
 		if not text and config.write_to_clipboard:
-				clipboard.write_to_selection("clipboard", self.last_clipboard)
+			clipboard.write_to_selection("clipboard", self.last_clipboard)
 	
 	def primary_listener(self, text):
 		if text and self.last_primary != text:
@@ -157,7 +157,7 @@ class AnamnesisDaemon(Daemon):
 		
 		# if the primary was erased, restore the last value
 		if not text and config.write_to_primary:
-				clipboard.write_to_selection("primary", self.last_primary)
+			clipboard.write_to_selection("primary", self.last_primary)
 
 	def run(self):
 		if config.cleanup_on_start:
