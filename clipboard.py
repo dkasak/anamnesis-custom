@@ -36,8 +36,8 @@ def write_to_selection(type, text):
 		selection[type].store()
 
 def write(text):
-	write_to_selection("clipboard", text)
 	write_to_selection("primary", text)
+	write_to_selection("clipboard", text)
 
 selection = {}
 
@@ -50,3 +50,4 @@ if can_read_from_selection("primary") or can_write_to_selection("primary"):
 	selection["primary"] = gtk.clipboard_get(gtk.gdk.SELECTION_PRIMARY)
 	selection["primary"].request_text(callback_primary)
 	selection["primary"].connect("owner-change", __owner_change_primary)
+
