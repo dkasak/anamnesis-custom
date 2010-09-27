@@ -150,6 +150,9 @@ def get_color(color_string):
 
 def apply_cell_renderer_configuration(cell_renderer):
 
+	if not config.tweak_ui:
+		return
+
 	if config.list_background:
 		cell_renderer.set_property("background", config.list_background)
 
@@ -160,6 +163,9 @@ def apply_cell_renderer_configuration(cell_renderer):
 		cell_renderer.set_property("width", config.window_width)
 
 def apply_treeview_configuration(treeview):
+
+	if not config.tweak_ui:
+		return
 
 	treeview_style = treeview.get_style().copy()
 
@@ -181,6 +187,9 @@ def apply_window_configuration(window):
 
 	if config.window_width and config.window_height:
 		window.set_default_size(config.window_width, config.window_height)
+
+	if not config.tweak_ui:
+		return
 
 	if config.opacity < 0.999:
 		window.set_opacity(config.opacity)

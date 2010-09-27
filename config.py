@@ -23,18 +23,18 @@ from xdg.BaseDirectory import *
 
 version = "Anamnesis version 1.0.2-dev"
 
-config_dir = os.path.join(xdg_config_home, "anamnesis")
-data_dir = os.path.join(xdg_data_home, "anamnesis")
-
 cfg_filename = "anamnesis.cfg"
+cfg_subdir = "anamnesis"
 
-# configuration parser
+config_dir = os.path.join(xdg_config_home, cfg_subdir)
+data_dir = os.path.join(xdg_data_home, cfg_subdir)
+
+# try read configuration files from on $XDG_DATA_DIRS and $XDG_CONFIG_HOME
 
 cfg_files = [os.path.join(config_dir, cfg_filename)]
 
 for dir in xdg_data_dirs:
-	directory = os.path.join(os.path.expanduser(dir), "anamnesis")
-	cfg_files += [os.path.join(directory, cfg_filename)]
+	cfg_files += [os.path.join(os.path.expanduser(dir), cfg_subdir, cfg_filename)]
 
 cfg_files.reverse()
 
@@ -43,13 +43,12 @@ cfg.read(cfg_files)
 
 section = ""
 
-# search the configuration file for the given key, returns the found value if it exists,
+# search the configuration for the given key, returns the found value if it exists,
 # otherwise return the default_value
 def get(key, default_value):
 	if cfg.has_option(section, key):
 		return cfg.get(section, key)
-	else:
-		return default_value
+	return default_value
 
 # search an integer value on the configuration file
 def getint(key, default_value):
@@ -61,7 +60,9 @@ def getfloat(key, default_value):
 
 # search a boolean value on the configuration file
 def getboolean(key, default_value):
-	return bool(get(key, default_value))
+	if cfg.has_option(section, key):
+		return cfg.getboolean(section, key)
+	return default_value
 
 # paths
 
@@ -87,6 +88,9 @@ max_history_storage_count = getint("max_history_storage_count", 10000) # maximum
 # user interface
 
 section = "ui"
+
+tweak_ui = getboolean("tweak_ui", True)
+
 list_background = get("list_background", "#000000") # bg color for the list of clipboard items
 list_foreground = get("list_foreground", "#ffffff") # fg color for the list of clipboard items
 list_background_selected = get("list_background_selected", "#200000") # bg color of the selected item
