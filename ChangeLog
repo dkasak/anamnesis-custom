@@ -1,3 +1,8 @@
+Version 1.0.2 - 2010-09-28
+
+	* Improved configuration files
+
+
 Version 1.0.1 - 2010-09-18
 
 	* Changed the config and data paths to conform the XDG standard
