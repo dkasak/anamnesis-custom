@@ -21,7 +21,7 @@ import os, os.path
 import ConfigParser
 from xdg.BaseDirectory import *
 
-version = "Anamnesis version 1.0.2-dev"
+version = "Anamnesis version 1.0.3"
 
 cfg_filename = "anamnesis.cfg"
 cfg_subdir = "anamnesis"
@@ -74,7 +74,7 @@ log_file = get("log", os.path.join(data_dir, "anamnesis.log")) # log location
 # log
 
 section = "log"
-log_activated = getboolean("activated", True) # if true, log messages to a file, otherwise does not write logs
+log_activated = getboolean("activated", False) # if true, log messages to a file, otherwise does not write logs
 log_formatter = get("formatter", "%(asctime)s - %(message)s") # formatter used to write the log messages
 
 # limits for better performance
