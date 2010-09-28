@@ -10,7 +10,7 @@ INSTALLING
 The recommended installation have three steps:
   1. copy the command-line to the system path
   2. install the anamnesis daemon in the session start-up
-  3. create a keyboard shortcut to the graphic interface.
+  3. create a keyboard shortcut to the graphic interface
 
 There is no automatic tool to do this yet.
 
@@ -23,6 +23,15 @@ There is no automatic tool to do this yet.
 
 3. Configure a shortcut to the graphic interface (System -> Preferences -> Keyboard Shortcuts):
       > anamnesis --browse
+
+
+CONFIGURATION
+
+Anamnesis will search for configuration files in the $XDG_DATA_DIRS and
+$XDG_CONFIG_HOME directories, which defaults to:
+
+   /usr/share/anamnesis/anamnesis.cfg
+   ~/.config/anamnesis/anamnesis.cfg
 
 
 COMMAND LINE
@@ -69,6 +78,7 @@ DEPENDENCIES
 * python-xdg
 * python-gtk2
 * sqlite3
+
 
 AUTHOR
 
