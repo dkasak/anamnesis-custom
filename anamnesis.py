@@ -61,7 +61,7 @@ if not options:
 if options.clip_to_add:
 	db.ClipDatabase().insert_text(options.clip_to_add)
 	import clipboard
-	clipboard.set(options.clip_to_add)
+	clipboard.write(options.clip_to_add)
 
 elif options.id_to_remove:
 	db.ClipDatabase().remove_clip_from_id(options.id_to_remove)
