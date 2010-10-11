@@ -135,36 +135,37 @@ class AnamnesisDaemon(Daemon):
 	
 	def __init__(self):
 		Daemon.__init__(self)
-		self.clip_database = db.ClipDatabase()
+		self.clip_database = db.get_instance()
 		self.last_clipboard = ''
 		self.last_primary = ''
+		self.clipboard = clipboard.get_instance()
 
 	def clipboard_listener(self, text):
 		if text and self.last_clipboard != text:
 			self.last_clipboard = text
 			if config.read_from_clipboard:
-				self.clip_database.insert_text(text)
+				self.clip_database.insert(text)
 		
 		# if the clipboard was erased, restore the last value
 		if not text and config.write_to_clipboard:
-			clipboard.write_to_selection("clipboard", self.last_clipboard)
+			self.clipboard.write_to_selection("clipboard", self.last_clipboard)
 	
 	def primary_listener(self, text):
 		if text and self.last_primary != text:
 			self.last_primary = text
 			if config.read_from_primary:
-				self.clip_database.insert_text(text)
+				self.clip_database.insert(text)
 		
 		# if the primary was erased, restore the last value
 		if not text and config.write_to_primary:
-			clipboard.write_to_selection("primary", self.last_primary)
+			self.clipboard.write_to_selection("primary", self.last_primary)
 
 	def run(self):
 		if config.cleanup_on_start:
 			self.clip_database.cleanup()
 		
 		self.logger.debug("anamnesis daemon started (pid = %d)" % os.getpid())
-		clipboard.add_listener("clipboard", self.clipboard_listener)
-		clipboard.add_listener("primary", self.primary_listener)
+		self.clipboard.add_listener("clipboard", self.clipboard_listener)
+		self.clipboard.add_listener("primary", self.primary_listener)
 		gtk.main()
 

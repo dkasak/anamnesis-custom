@@ -19,6 +19,7 @@
 #
 
 import browser
+import clipboard
 import db
 import optparse
 import os
@@ -59,12 +60,11 @@ if not options:
 	sys.exit()
 
 if options.clip_to_add:
-	db.ClipDatabase().insert_text(options.clip_to_add)
-	import clipboard
-	clipboard.write(options.clip_to_add)
+	db.get_instance().insert(options.clip_to_add)
+	clipboard.get_instance().write(options.clip_to_add)
 
 elif options.id_to_remove:
-	db.ClipDatabase().remove_clip_from_id(options.id_to_remove)
+	db.get_instance().remove(options.id_to_remove)
 
 elif options.start:
 	daemon.AnamnesisDaemon().start()
@@ -82,7 +82,7 @@ elif options.browser:
 
 elif options.cleanup:
 	print "Performing database cleanup, this could take some time. Please wait..."
-	db.ClipDatabase().cleanup()
+	db.get_instance().cleanup()
 	print "done."
 
 elif options.n:
@@ -93,7 +93,7 @@ elif options.n:
 	
 	print ' id | clip'
 	print '-------------------'
-	for clip in db.ClipDatabase().get_clips(n, options.keywords):
+	for clip in db.get_instance().search(n, options.keywords):
 		
 		if options.brief:
 			clip_text = ' '.join(clip[1][:config.max_rowtext_size].strip().splitlines())

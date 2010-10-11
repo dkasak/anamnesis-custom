@@ -21,7 +21,7 @@ import os, os.path
 import ConfigParser
 from xdg.BaseDirectory import *
 
-version = "Anamnesis version 1.0.3"
+version = "Anamnesis version 1.0.4-dev"
 
 cfg_filename = "anamnesis.cfg"
 cfg_subdir = "anamnesis"
@@ -74,7 +74,7 @@ log_file = get("log", os.path.join(data_dir, "anamnesis.log")) # log location
 # log
 
 section = "log"
-log_activated = getboolean("activated", False) # if true, log messages to a file, otherwise does not write logs
+log_activated = getboolean("activated", True) # if true, log messages to a file, otherwise does not write logs
 log_formatter = get("formatter", "%(asctime)s - %(message)s") # formatter used to write the log messages
 
 # limits for better performance
@@ -106,6 +106,7 @@ window_background = get("window_background", "#000000") # window bg color
 # clipboard
 
 section = "clipboard"
+clipboard_implementation = get("clipboard_implementation", "gtk_xclip")
 write_to_clipboard = getboolean("write_to_clipboard", True) # enable to write on the clipboard selection
 write_to_primary = getboolean("write_to_primary", True) # enable to write on the primary selection
 
@@ -115,5 +116,6 @@ read_from_primary = getboolean("read_from_primary", False) # enable to read/stor
 # database
 
 section = "database"
+database_implementation = get("database_implementation", "sqlite3fts") # use sqlite3 with full-text search enabled
 cleanup_on_start = getboolean("cleanup_on_start", True) # performs a cleanup when the daemon is started
 

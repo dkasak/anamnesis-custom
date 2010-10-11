@@ -28,7 +28,7 @@ import db
 
 # ----------------------------------------------
 
-clip_database = db.ClipDatabase()
+clip_database = db.get_instance()
 
 key_escape  = gtk.gdk.keyval_from_name('Escape')
 key_up      = gtk.gdk.keyval_from_name('Up')
@@ -74,8 +74,8 @@ def row_activated(treeview, path, view_column, data=None):
 	
 	#  insert text in database and write to clipboard
 	clip = get_clip(treeview, path)
-	clip_database.insert_text(clip.text, clip.rowid)
-	clipboard.write(clip.text)
+	clip_database.insert(clip.text, clip.rowid)
+	clipboard.get_instance().write(clip.text)
 	
 	# may need some time to set the clipboard properly before exiting the application
 	# TODO make this time configurable
@@ -86,7 +86,7 @@ def row_activated(treeview, path, view_column, data=None):
 # returns a gtk.ListStore with the clipboard history
 def create_list_model(max_clips, keywords=None):
 	list_store = gtk.ListStore(gobject.TYPE_PYOBJECT)
-	clips = clip_database.get_clips(max_clips, keywords)
+	clips = clip_database.search(max_clips, keywords)
 	for clip in clips:
 		list_store.append([Clip(clip)])
 	return list_store
@@ -128,7 +128,7 @@ def key_pressed(widget, event, data=None):
 	elif event.keyval == key_del and treeview.is_focus():
 		model, iter = treeview.get_selection().get_selected()
 		clip_id = model.get(iter,0)[0].rowid
-		clip_database.remove_clip_from_id(clip_id)
+		clip_database.remove(clip_id)
 		update_treeview()
 	
 	elif event.keyval in [key_up, key_down, key_enter, key_pgup, key_pgdown, key_home, key_end]:

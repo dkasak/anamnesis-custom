@@ -18,95 +18,33 @@
 #
 
 import config
-import os
-import sqlite3
 
-class ClipDatabase:
-	
-	def __init__(self):
-		# try to create the data directory if it does not exists yet
-		try:
-			os.mkdir(config.data_dir)
-		except OSError:
-			pass
-		
-		# try to create database if it does not exists yet
-		try:
-			open(config.database_file, 'a').close()
-		except Exception as exception:
-			print "error on database initialization: %s" % str(exception)
-			return
-		
-		# try to connect to the database
-		try:
-			self.connection = sqlite3.connect(config.database_file)
-			self.cursor = self.connection.cursor()
-			self.cursor.execute("CREATE VIRTUAL TABLE clips USING fts3(text)")
-			self.connection.commit()
-		except:
-			pass
+class IClipboardDatabase:
 
-	def insert_text(self, text, id = None):
-		# avoid inserting a clip that is already on the clipboard
-		if not text or text == self.get_last_clip():
-			return
+	def insert(self, text, id=None):
+		""" Inserts a data to the clipboard database.
+		 The database must be ordered by the last inclusion and any duplicates must be removed.
+		 To move an item up in the database, is faster to use the id argument, avoiding searching
+		 a text for all the database."""
+		pass
 
-		# do not store duplicates
-		if id:
-			self.remove_clip_from_id(id) # faster
-		else:
-			self.remove_clip_from_text(text) # slower, need a table full-scan
-	
-		self.cursor.execute("INSERT INTO clips VALUES (?)", (unicode(str(text)),))
-		self.connection.commit()
+	def remove(self, id):
+		""" Remove the clipboard item with the given id"""
+		pass
 
-	def remove_clip_from_text(self, text):
-		if text:
-			self.cursor.execute('DELETE FROM clips WHERE text = ?', (unicode(str(text)),))
-			self.connection.commit()
+	def search(self, n, keywords=None):
+		""" Returns the n last inserted clipboard items, filter the search with the given list of keywords"""
+		pass
 
-	def remove_clip_from_id(self, id):
-		if id:
-			self.cursor.execute('DELETE FROM clips WHERE rowid = ?', (int(id),))
-			self.connection.commit()
-	
-	def verify_history_size(self):
-		try:
-			delete_count = self.get_number_of_clips() - config.max_history_storage_count
-			
-			if delete_count <= 0:
-				return
-			
-			self.cursor.execute('SELECT rowid FROM clips ORDER BY rowid LIMIT ?', (delete_count,))
-			
-			for row in self.cursor:
-				self.cursor.execute('DELETE FROM clips WHERE rowid = ?', (int(row[0]),))
-			
-			self.connection.commit()
-		
-		except Exception as exception:
-			print "error verifying the maximum history element count: %s", str(exception)
-	
 	def cleanup(self):
-		self.verify_history_size()
-		self.cursor.execute('VACUUM')
-		self.connection.commit()
+		""" Perform a cleanup on the database, and make sure the database size is less than 'config.max_history_storage_count'"""
+		pass
 
-	def get_last_clip(self):
-		try:
-			return self.get_clips(1)[0]
-		except:
-			return None
+db = None
 
-	def get_clips(self, n, keywords=None):
-		if keywords:
-			match = unicode("* ".join(keywords.split(' ')) + "*")
-			self.cursor.execute('SELECT rowid, text FROM clips WHERE text MATCH (?) ORDER BY rowid DESC LIMIT ?', (match,n))
-		else:
-			self.cursor.execute('SELECT rowid, text FROM clips ORDER BY rowid DESC LIMIT ?', (n,))
+def get_instance():
+	global db
+	if not db:
+		db = __import__("db_" + config.database_implementation).ClipboardDatabase()
+	return db
 
-		return [row for row in self.cursor]
-
-	def get_number_of_clips(self):
-		self.cursor.execute('SELECT count(*) FROM clips')
-		return self.cursor.fetchone()[0]

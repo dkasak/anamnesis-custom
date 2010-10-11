@@ -1,53 +1,57 @@
+#
+#  Anamnesis clipboard manager.
+#
+#  Copyright (C) 2010  Fabio Guerra <fabiowguerra@users.sourceforge.net>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
 import config
-import pygtk
-pygtk.require('2.0')
-import gtk
 
-listeners = { "clipboard": [], "primary": [] }
+class AbstractClipboard:
 
-def can_read_from_selection(type):
-	return (type == "clipboard" and config.read_from_clipboard) or \
-	       (type == "primary" and config.read_from_primary)
+	def __init__(self):
+		self.listeners = { "clipboard": [], "primary": [] }
 
-def can_write_to_selection(type):
-	return (type == "clipboard" and config.write_to_clipboard) or \
-	       (type == "primary" and config.write_to_primary)
+	def notify_listeners(self, type, text):
+		for listener in self.listeners[type]:
+			listener(text)
 
-def notify_listeners(type, text):
-	for listener in listeners[type]:
-		listener(text)
+	def add_listener(self, type, listener):
+		self.listeners[type].append(listener)
 
-def add_listener(type, listener):
-	listeners[type].append(listener)
+	def write(self, text):
+		self.write_to_selection("primary", text)
+		self.write_to_selection("clipboard", text)
 
-def callback_clipboard(clipboard, text, data):
-	notify_listeners("clipboard", text)
-def callback_primary(clipboard, text, data):
-	notify_listeners("primary", text)
+	def can_read_from_selection(self, type):
+		return (type == "clipboard" and config.read_from_clipboard) or \
+			   (type == "primary" and config.read_from_primary)
 
-def __owner_change_clipboard(clipboard, event, data=None):
-	selection["clipboard"].request_text(callback_clipboard)
-def __owner_change_primary(clipboard, event, data=None):
-	selection["primary"].request_text(callback_primary)
+	def can_write_to_selection(self, type):
+		return (type == "clipboard" and config.write_to_clipboard) or \
+			   (type == "primary" and config.write_to_primary)
 
-def write_to_selection(type, text):
-	if text and can_write_to_selection(type):
-		selection[type].set_text(text)
-		selection[type].store()
+	def write_to_selection(self, type, text):
+		pass
 
-def write(text):
-	write_to_selection("primary", text)
-	write_to_selection("clipboard", text)
 
-selection = {}
+clipboard = None
 
-if can_read_from_selection("clipboard") or can_write_to_selection("clipboard"):
-	selection["clipboard"] = gtk.clipboard_get(gtk.gdk.SELECTION_CLIPBOARD)
-	selection["clipboard"].request_text(callback_clipboard)
-	selection["clipboard"].connect("owner-change", __owner_change_clipboard)
-
-if can_read_from_selection("primary") or can_write_to_selection("primary"):
-	selection["primary"] = gtk.clipboard_get(gtk.gdk.SELECTION_PRIMARY)
-	selection["primary"].request_text(callback_primary)
-	selection["primary"].connect("owner-change", __owner_change_primary)
+def get_instance():
+	global clipboard
+	if not clipboard:
+		clipboard = __import__("clipboard_" + config.clipboard_implementation).Clipboard()
+	return clipboard
 
