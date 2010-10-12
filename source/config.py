@@ -106,7 +106,7 @@ window_background = get("window_background", "#000000") # window bg color
 # clipboard
 
 section = "clipboard"
-clipboard_implementation = get("clipboard_implementation", "gtk_xclip")
+clipboard_implementation = get("clipboard_implementation", "gtk")
 write_to_clipboard = getboolean("write_to_clipboard", True) # enable to write on the clipboard selection
 write_to_primary = getboolean("write_to_primary", True) # enable to write on the primary selection
 

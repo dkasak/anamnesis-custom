@@ -1,3 +1,17 @@
+Version 1.0.4 - 2010-10-??
+
+	* Refactoring, made it easier to change implementation for clipboard and database modules
+
+	* Create the (optional) gtk_xclip implementation that uses xclip to write to the clipboard
+
+	* Moved all source code to the ./source directory
+
+	* Added unit tests
+
+Version 1.0.3 - 2010-10-10
+
+	* Fixed bug with the '-a' option in the command line
+
 Version 1.0.2 - 2010-09-28
 
 	* Improved configuration files

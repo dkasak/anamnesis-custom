@@ -135,16 +135,16 @@ class AnamnesisDaemon(Daemon):
 	
 	def __init__(self):
 		Daemon.__init__(self)
-		self.clip_database = db.get_instance()
+		self.database = db.get_instance()
+		self.clipboard = clipboard.get_instance()
 		self.last_clipboard = ''
 		self.last_primary = ''
-		self.clipboard = clipboard.get_instance()
 
 	def clipboard_listener(self, text):
 		if text and self.last_clipboard != text:
 			self.last_clipboard = text
 			if config.read_from_clipboard:
-				self.clip_database.insert(text)
+				self.database.insert(text)
 		
 		# if the clipboard was erased, restore the last value
 		if not text and config.write_to_clipboard:
@@ -154,7 +154,7 @@ class AnamnesisDaemon(Daemon):
 		if text and self.last_primary != text:
 			self.last_primary = text
 			if config.read_from_primary:
-				self.clip_database.insert(text)
+				self.database.insert(text)
 		
 		# if the primary was erased, restore the last value
 		if not text and config.write_to_primary:
@@ -162,7 +162,7 @@ class AnamnesisDaemon(Daemon):
 
 	def run(self):
 		if config.cleanup_on_start:
-			self.clip_database.cleanup()
+			self.database.cleanup()
 		
 		self.logger.debug("anamnesis daemon started (pid = %d)" % os.getpid())
 		self.clipboard.add_listener("clipboard", self.clipboard_listener)

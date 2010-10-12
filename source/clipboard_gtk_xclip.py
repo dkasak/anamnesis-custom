@@ -17,12 +17,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import config
-import clipboard
 import clipboard_gtk
-import pygtk
-pygtk.require('2.0')
-import gtk
 import subprocess
 
 class Clipboard(clipboard_gtk.Clipboard):
@@ -31,8 +26,10 @@ class Clipboard(clipboard_gtk.Clipboard):
 		clipboard_gtk.Clipboard.__init__(self)
 
 	def write_to_selection(self, type, text):
-		if text and self.can_write_to_selection(type):
-			process = subprocess.Popen(['xclip', '-selection', type], stdin=subprocess.PIPE)
-			process.communicate(input=text)
-
+		try:
+			if text and self.can_write_to_selection(type):
+				process = subprocess.Popen(['xclip', '-selection', type], stdin=subprocess.PIPE)
+				process.communicate(input=text)
+		except:
+			print "Error calling xclip to set the clipboard"
 
