@@ -5,22 +5,28 @@ import config
 import time
 import unittest
 
+import gtk
+import gobject
+
 class TestClipboard(unittest.TestCase):
 
-	def setUpClass(self):
-		print "setUpClass"
+	def wait_gtk(self):
+		while gtk.events_pending():
+			gtk.main_iteration()
+		time.sleep(0.05)
+
+	def timeout(self):
+		return (time.time() - self.start_time) > 2
 
 	def setUp(self):
 		self.clipboard = clipboard.get_instance()
 		self.clipboard.add_listener("primary", self.primary_listener)
 		self.clipboard.add_listener("clipboard", self.clipboard_listener)
 		self.data = { "primary" : "~~", "clipboard" : "~~~" }
+		self.start_time = time.time()
 
 		config.write_to_primary = True
 		config.write_to_clipboard = True
-		self.clipboard.write("-- undefined --")
-
-		time.sleep(0.05)
 
 	def tearDown(self):
 		self.clipboard.remove_listener("primary", self.primary_listener)
@@ -65,8 +71,10 @@ class TestClipboard(unittest.TestCase):
 
 		for data in strings:
 			self.clipboard.write(data)
-			time.sleep(0.05)
+
 			if self.clipboard.can_write_to_selection(type) and self.clipboard.can_read_from_selection(type):
+				while (self.data[type] != data and not self.timeout()):
+					self.wait_gtk()
 				self.assertEqual(self.data[type], data)
 			else:
 				self.assertEqual(self.data[type], old_data)
@@ -74,10 +82,12 @@ class TestClipboard(unittest.TestCase):
 	def test_write_and_read(self):
 		strings = ["ab", " Hello!! "]
 
-		config.write_to_primary = False
-		self.write_and_read("primary", strings)
-
 		config.write_to_primary = True
+		config.read_from_primary = True
+		self.write_and_read("primary", strings)
+		config.read_from_primary = False
+
+		config.write_to_primary = False
 		self.write_and_read("primary", strings)
 
 		config.write_to_clipboard = False

@@ -55,7 +55,7 @@ class AbstractClipboard:
 
 	def write_to_selection(self, type, data):
 		""" Writes the given data to the specified clipboard selection type. """
-		pass
+		raise NotImplementedError
 
 
 clipboard = None
