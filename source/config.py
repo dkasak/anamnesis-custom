@@ -18,7 +18,8 @@
 #
 
 import os, os.path
-import ConfigParser
+
+from ConfigParser import RawConfigParser
 from xdg.BaseDirectory import *
 
 version = "Anamnesis version 1.0.4-dev"
@@ -38,7 +39,7 @@ for dir in xdg_data_dirs:
 
 cfg_files.reverse()
 
-cfg = ConfigParser.RawConfigParser()
+cfg = RawConfigParser()
 cfg.read(cfg_files)
 
 section = ""

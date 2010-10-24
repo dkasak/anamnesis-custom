@@ -103,7 +103,16 @@ def test_implementation(implementation_name):
 	suite = unittest.TestLoader().loadTestsFromTestCase(TestClipboard)
 	unittest.TextTestRunner(verbosity=2).run(suite)
 
-if __name__ == '__main__':
+def run_gtk():
 	for clipboard_implementation in ["gtk", "gtk_xclip"]:
 		test_implementation(clipboard_implementation)
+
+if __name__ == '__main__':
+	print 'starting gtk.main'
+
+	#gobject.timeout_add(1000, run_gtk)
+	#gtk.main()
+	run_gtk()
+	print 'finished gtk.main'
+
 

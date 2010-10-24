@@ -35,7 +35,7 @@ class ClipboardDatabase(db.IClipboardDatabase):
 		try:
 			open(config.database_file, 'a').close()
 		except Exception as exception:
-			print "error on database initialization: %s" % str(exception)
+			print ("error on database initialization: %s" % str(exception))
 			return
 		
 		# try to connect to the database
@@ -86,7 +86,7 @@ class ClipboardDatabase(db.IClipboardDatabase):
 			self.connection.commit()
 		
 		except Exception as exception:
-			print "error verifying the maximum history element count: %s", str(exception)
+			print ("error verifying the maximum history element count: %s", str(exception))
 	
 	def cleanup(self):
 		self.verify_history_size()

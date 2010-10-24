@@ -26,19 +26,19 @@ class IClipboardDatabase:
 		 The database must be ordered by the last inclusion and any duplicates must be removed.
 		 To move an item up in the database, is faster to use the id argument, avoiding searching
 		 a text for all the database."""
-		pass
+		raise NotImplementedError
 
 	def remove(self, id):
 		""" Remove the clipboard item with the given id"""
-		pass
+		raise NotImplementedError
 
 	def search(self, n, keywords=None):
 		""" Returns the n last inserted clipboard items, filter the search with the given list of keywords"""
-		pass
+		raise NotImplementedError
 
 	def cleanup(self):
 		""" Perform a cleanup on the database, and make sure the database size is less than 'config.max_history_storage_count'"""
-		pass
+		raise NotImplementedError
 
 db = None
 
