@@ -21,6 +21,7 @@ import clipboard
 import pygtk
 pygtk.require('2.0')
 import gtk
+import time
 
 class Clipboard(clipboard.AbstractClipboard):
 
@@ -52,4 +53,12 @@ class Clipboard(clipboard.AbstractClipboard):
 		if text and self.can_write_to_selection(type):
 			self.selection[type].set_text(text)
 			self.selection[type].store()
+			
+			for i in range(5):
+				self.__wait_gtk()
+
+	def __wait_gtk(self):
+		while gtk.events_pending():
+			gtk.main_iteration()
+		time.sleep(0.05)
 

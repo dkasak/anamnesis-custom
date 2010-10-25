@@ -2,7 +2,6 @@ import clipboard
 import clipboard_gtk
 import clipboard_gtk_xclip
 import config
-import time
 import unittest
 
 import gtk
@@ -10,20 +9,11 @@ import gobject
 
 class TestClipboard(unittest.TestCase):
 
-	def wait_gtk(self):
-		while gtk.events_pending():
-			gtk.main_iteration()
-		time.sleep(0.05)
-
-	def timeout(self):
-		return (time.time() - self.start_time) > 2
-
 	def setUp(self):
 		self.clipboard = clipboard.get_instance()
 		self.clipboard.add_listener("primary", self.primary_listener)
 		self.clipboard.add_listener("clipboard", self.clipboard_listener)
 		self.data = { "primary" : "~~", "clipboard" : "~~~" }
-		self.start_time = time.time()
 
 		config.write_to_primary = True
 		config.write_to_clipboard = True
@@ -73,8 +63,6 @@ class TestClipboard(unittest.TestCase):
 			self.clipboard.write(data)
 
 			if self.clipboard.can_write_to_selection(type) and self.clipboard.can_read_from_selection(type):
-				while (self.data[type] != data and not self.timeout()):
-					self.wait_gtk()
 				self.assertEqual(self.data[type], data)
 			else:
 				self.assertEqual(self.data[type], old_data)
@@ -108,11 +96,6 @@ def run_gtk():
 		test_implementation(clipboard_implementation)
 
 if __name__ == '__main__':
-	print 'starting gtk.main'
-
-	#gobject.timeout_add(1000, run_gtk)
-	#gtk.main()
 	run_gtk()
-	print 'finished gtk.main'
 
 
