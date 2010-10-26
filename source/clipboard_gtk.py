@@ -63,7 +63,7 @@ class Clipboard(clipboard.AbstractClipboard):
 			self.selection[type].store()
 			
 			t0 = time.time()
-			while self.data[type] != text and not time.time() - t0 < self.write_timeout:
+			while self.data[type] != text and time.time() - t0 < self.write_timeout:
 				self.__wait_gtk()
 
 	def __wait_gtk(self):
