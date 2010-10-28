@@ -21,11 +21,13 @@ import config
 
 class IClipboardDatabase:
 
-	def insert(self, text, id=None):
-		""" Inserts a data to the clipboard database.
-		 The database must be ordered by the last inclusion and any duplicates must be removed.
-		 To move an item up in the database, is faster to use the id argument, avoiding searching
-		 a text for all the database."""
+	def insert(self, data):
+		""" Inserts a data to the top of the database, search and remove any duplicates. """
+		raise NotImplementedError
+
+	def move_up(self, id, data):
+		""" Calls remove(id) and insert data to the top of the database.
+            Given data must correspond to the given id. """
 		raise NotImplementedError
 
 	def remove(self, id):

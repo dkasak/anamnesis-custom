@@ -66,7 +66,7 @@ def hide_window():
 def quit():
 	gtk.main_quit()
 
-# user chooses the clip, copy to the clipboard and quit
+# when user chooses the clip, copy to the clipboard and quit
 def row_activated(treeview, path, view_column, data=None):
 	
 	# make window invisible to the user
@@ -74,12 +74,8 @@ def row_activated(treeview, path, view_column, data=None):
 	
 	#  insert text in database and write to clipboard
 	clip = get_clip(treeview, path)
-	clip_database.insert(clip.text, clip.rowid)
+	clip_database.move_up(clip.rowid, clip.text)
 	clipboard.get_instance().write(clip.text)
-	
-	# may need some time to set the clipboard properly before exiting the application
-	# TODO make this time configurable
-	time.sleep(1)
 	
 	quit()
 

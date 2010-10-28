@@ -47,7 +47,7 @@ class ClipboardDatabase(db.IClipboardDatabase):
 		except:
 			pass
 
-	def insert(self, text, id=None):
+	def __insert(self, text, id=None):
 		# avoid inserting a clip that is already on the clipboard
 		if not text or text == self.get_last_clip():
 			return
@@ -57,9 +57,15 @@ class ClipboardDatabase(db.IClipboardDatabase):
 			self.remove(id) # faster
 		else:
 			self.remove_clip_from_text(text) # slower, need a table full-scan
-	
+
 		self.cursor.execute("INSERT INTO clips VALUES (?)", (unicode(str(text)),))
 		self.connection.commit()
+
+	def insert(self, text):
+		self.__insert(text)
+
+	def move_up(self, id, text):
+		self.__insert(text, id)
 
 	def remove_clip_from_text(self, text):
 		if text:
@@ -70,7 +76,7 @@ class ClipboardDatabase(db.IClipboardDatabase):
 		if id:
 			self.cursor.execute('DELETE FROM clips WHERE rowid = ?', (int(id),))
 			self.connection.commit()
-	
+
 	def verify_history_size(self):
 		try:
 			delete_count = self.get_number_of_clips() - config.max_history_storage_count

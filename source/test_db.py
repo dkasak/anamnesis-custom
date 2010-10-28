@@ -4,41 +4,6 @@ import config
 import unittest
 
 import os
-import time
-
-lorem = """lorem ipsum dolor sit amet consetetur sadipscing elitr sed diam nonumy
-eirmod tempor invidunt ut labore et dolore magna aliquyam erat sed diam
-voluptua at vero eos et accusam et justo duo dolores et ea rebum stet clita
-kasd gubergren no sea takimata sanctus est lorem ipsum dolor sit amet lorem
-ipsum dolor sit amet consetetur sadipscing elitr sed diam nonumy eirmod
-tempor invidunt ut labore et dolore magna aliquyam erat sed diam voluptua at
-vero eos et accusam et justo duo dolores et ea rebum stet clita kasd
-gubergren no sea takimata sanctus est lorem ipsum dolor sit amet lorem ipsum
-dolor sit amet consetetur sadipscing elitr sed diam nonumy eirmod tempor
-invidunt ut labore et dolore magna aliquyam erat sed diam voluptua at vero
-eos et accusam et justo duo dolores et ea rebum stet clita kasd gubergren no
-sea takimata sanctus est lorem ipsum dolor sit amet
-"""
-
-import random
-import db
-
-words = " ".join(lorem.splitlines()).split(" ")
-max = len(words)-1
-
-def get_random_text(n):
-	sentence = ""
-	c = 0
-	for i in range(n):
-		word = words[random.randint(0,max)]
-		c += len(word)
-		if c  > 80:
-			c = len(word)
-			sentence += "\n"
-		else:
-			sentence += word
-			sentence += " " 
-	return sentence
 
 class TestDatabase(unittest.TestCase):
 
@@ -130,7 +95,7 @@ class TestDatabase(unittest.TestCase):
 
 		self.__insert_data(data)
 		self.__search_and_compare("a b c", [u"aa bb cc"])
-		self.__search_and_compare("b d e", [u"bb dd ee"])
+		self.__search_and_compare("a b d", [u"aa bb dd"])
 		self.__search_and_compare("a c d", [u"aa cc dd"])
 		self.__search_and_compare("b bb a", [u"aa bb dd", u"aa bb cc"])
 		self.__search_and_compare("a c", [u"aa cc dd", u"aa bb cc"])
@@ -157,7 +122,7 @@ class TestDatabase(unittest.TestCase):
 		id = values[2][0]
 
 		self.assertEqual(values[2][1], u"cc")
-		self.db.insert(u"cc", id)
+		self.db.move_up(id, u"cc")
 		
 		values = self.db.search(5)
 		self.assertEqual(values[0][1], u"cc")
@@ -172,8 +137,11 @@ def test_implementation(implementation_name):
 	suite = unittest.TestLoader().loadTestsFromTestCase(TestDatabase)
 	unittest.TextTestRunner(verbosity=2).run(suite)
 
-if __name__ == '__main__':
+def main():
 	for clipboard_implementation in ["sqlite3fts"]:
 		test_implementation(clipboard_implementation)
 
+if __name__ == '__main__':
+	
+	main()
 
