@@ -24,6 +24,7 @@ import atexit, os, signal, sys
 import logging, logging.handlers
 import clipboard
 import db
+import config
 
 class Daemon:
 	def __init__(self):
