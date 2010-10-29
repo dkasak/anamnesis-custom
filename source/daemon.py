@@ -21,9 +21,9 @@ import pygtk
 pygtk.require('2.0')
 import gtk, gobject
 import atexit, os, signal, sys
-import config, db
 import logging, logging.handlers
 import clipboard
+import db
 
 class Daemon:
 	def __init__(self):
@@ -143,21 +143,19 @@ class AnamnesisDaemon(Daemon):
 	def clipboard_listener(self, text):
 		if text and self.last_clipboard != text:
 			self.last_clipboard = text
-			if config.read_from_clipboard:
-				self.database.insert(text)
-		
+			self.database.insert(text)
+	
 		# if the clipboard was erased, restore the last value
-		if not text and config.write_to_clipboard:
+		if not text:
 			self.clipboard.write_to_selection("clipboard", self.last_clipboard)
 	
 	def primary_listener(self, text):
 		if text and self.last_primary != text:
 			self.last_primary = text
-			if config.read_from_primary:
-				self.database.insert(text)
+			self.database.insert(text)
 		
 		# if the primary was erased, restore the last value
-		if not text and config.write_to_primary:
+		if not text:
 			self.clipboard.write_to_selection("primary", self.last_primary)
 
 	def run(self):
