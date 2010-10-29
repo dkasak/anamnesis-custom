@@ -15,9 +15,6 @@ class TestClipboard(unittest.TestCase):
 		self.clipboard.add_listener("clipboard", self.clipboard_listener)
 		self.data = { "primary" : "~~", "clipboard" : "~~~" }
 
-		config.write_to_primary = True
-		config.write_to_clipboard = True
-
 	def tearDown(self):
 		self.clipboard.remove_listener("primary", self.primary_listener)
 		self.clipboard.remove_listener("clipboard", self.clipboard_listener)
@@ -28,31 +25,35 @@ class TestClipboard(unittest.TestCase):
 	def clipboard_listener(self, data):
 		self.data["clipboard"] = data
 
-	def test_can_write_to_primary(self):
+	def test_can_write_to_primary_false(self):
 		config.write_to_primary = False
 		self.assertFalse(self.clipboard.can_write_to_selection("primary"))
 
+	def test_can_write_to_primary_true(self):
 		config.write_to_primary = True
 		self.assertTrue(self.clipboard.can_write_to_selection("primary"))
 
-	def test_can_write_to_clipboard(self):
+	def test_can_write_to_clipboard_false(self):
 		config.write_to_clipboard = False
 		self.assertFalse(self.clipboard.can_write_to_selection("clipboard"))
 
+	def test_can_write_to_clipboard_true(self):
 		config.write_to_clipboard = True
 		self.assertTrue(self.clipboard.can_write_to_selection("clipboard"))
 
-	def test_can_read_from_primary(self):
+	def test_can_read_from_primary_false(self):
 		config.read_from_primary = False
 		self.assertFalse(self.clipboard.can_read_from_selection("primary"))
 
+	def test_can_read_from_primary_true(self):
 		config.read_from_primary = True
 		self.assertTrue(self.clipboard.can_read_from_selection("primary"))
 
-	def test_can_read_from_clipboard(self):
+	def test_can_read_from_clipboard_false(self):
 		config.read_from_clipboard = False
 		self.assertFalse(self.clipboard.can_read_from_selection("clipboard"))
 
+	def test_can_read_from_clipboard_true(self):
 		config.read_from_clipboard = True
 		self.assertTrue(self.clipboard.can_read_from_selection("clipboard"))
 
@@ -67,22 +68,39 @@ class TestClipboard(unittest.TestCase):
 			else:
 				self.assertEqual(self.data[type], old_data)
 
-	def test_write_and_read(self):
+	def __set_configuration(self, read_from_primary, write_to_primary, read_from_clipboard, write_to_clipboard):
+		config.read_from_primary = read_from_primary
+		config.write_to_primary = write_to_primary
+		config.read_from_clipboard = read_from_clipboard
+		config.write_to_clipboard = write_to_clipboard
+
+	def __test_write_and_read_selection(self, selection):
 		strings = ["ab", " Hello!! "]
+		self.write_and_read(selection, strings)
 
-		config.write_to_primary = True
-		config.read_from_primary = True
-		self.write_and_read("primary", strings)
-		config.read_from_primary = False
+	def test_write_and_read_primary(self):
+		self.__set_configuration(True, True, False, False)
+		self.__test_write_and_read_selection("primary")
 
-		config.write_to_primary = False
-		self.write_and_read("primary", strings)
+	def test_write_and_noread_primary(self):
+		self.__set_configuration(True, False, False, False)
+		self.__test_write_and_read_selection("primary")
 
-		config.write_to_clipboard = False
-		self.write_and_read("clipboard", strings)
+	def test_nowrite_and_read_primary(self):
+		self.__set_configuration(False, True, False, False)
+		self.__test_write_and_read_selection("primary")
 
-		config.write_to_clipboard = True
-		self.write_and_read("clipboard", strings)
+	def test_write_and_read_clipboard(self):
+		self.__set_configuration(False, False, True, True)
+		self.__test_write_and_read_selection("clipboard")
+
+	def test_nowrite_and_read_clipboard(self):
+		self.__set_configuration(False, False, True, False)
+		self.__test_write_and_read_selection("clipboard")
+
+	def test_write_and_noread_clipboard(self):
+		self.__set_configuration(False, False, False, True)
+		self.__test_write_and_read_selection("clipboard")
 
 def test_implementation(implementation_name):
 	print "========================================"

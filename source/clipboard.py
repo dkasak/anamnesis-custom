@@ -27,8 +27,9 @@ class AbstractClipboard:
 
 	def notify_listeners(self, type, text):
 		""" This method should be called whenever the data on the clipboard changes. """
-		for listener in self.listeners[type]:
-			listener(text)
+		if self.can_read_from_selection(type):
+			for listener in self.listeners[type]:
+				listener(text)
 
 	def add_listener(self, type, listener):
 		""" Adds a listener that will be notified whenever the data on the clipboard changes. """
