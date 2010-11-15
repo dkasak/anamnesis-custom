@@ -30,7 +30,7 @@ class Daemon:
 	def __init__(self):
 		self.logger = logging.getLogger('AnamnesisDaemonLogger')
 		self.logger.setLevel(logging.DEBUG)
-		
+
 		if config.log_activated:
 			formatter = logging.Formatter(config.log_formatter)
 			handler = logging.handlers.RotatingFileHandler(config.log_file, maxBytes=40000, backupCount=2)
@@ -98,7 +98,7 @@ class Daemon:
 		# redirect stdin to '/dev/null'
 		dev_null = os.open(os.devnull, os.O_RDWR)
 		os.dup2(dev_null, sys.stdin.fileno())
-		
+
 		# redirect stdout & stderr to logger
 		class LoggerRedirect:
 			def __init__(self, logger):
@@ -143,20 +143,24 @@ class AnamnesisDaemon(Daemon):
 
 	def clipboard_listener(self, text):
 		if text and self.last_clipboard != text:
+			self.logger.trace("clipboard listener [%s]" % text)
 			self.last_clipboard = text
 			self.database.insert(text)
 	
 		# if the clipboard was erased, restore the last value
 		if not text:
+			self.logger.debug('clipboard was erased, restoring last value [%s]' % self.last_clipboard)
 			self.clipboard.write_to_selection("clipboard", self.last_clipboard)
 	
 	def primary_listener(self, text):
 		if text and self.last_primary != text:
+			self.logger.trace("primary listener [%s]" % text)
 			self.last_primary = text
 			self.database.insert(text)
 		
 		# if the primary was erased, restore the last value
 		if not text:
+			self.logger.debug('primary was erased, restoring last value [%s]' % self.last_primary)
 			self.clipboard.write_to_selection("primary", self.last_primary)
 
 	def run(self):

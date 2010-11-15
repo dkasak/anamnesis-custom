@@ -24,9 +24,18 @@ class AbstractClipboard:
 
 	def __init__(self):
 		self.listeners = { "clipboard": [], "primary": [] }
+		self.last = { "clipboard": "", "primary": "" }
 
-	def notify_listeners(self, type, text):
+	def on_data_changed(self, type, text):
 		""" This method should be called whenever the data on the clipboard changes. """
+
+		# if the clipboard was erased, restore the last value
+		if not text and self.last[type]:
+			self.write_to_selection(type, self.last[type])
+		else:
+			self.last[type] = text
+
+		# notify listeners
 		if self.can_read_from_selection(type):
 			for listener in self.listeners[type]:
 				listener(text)

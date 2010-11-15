@@ -30,7 +30,7 @@ class Clipboard(clipboard.AbstractClipboard):
 		self.selection = {}
 		
 		# max time to wait after writing to the clipboard
-		self.write_timeout = 2000
+		self.write_timeout = 2
 		
 		if self.can_read_from_selection("clipboard") or self.can_write_to_selection("clipboard"):
 			self.selection["clipboard"] = gtk.clipboard_get(gtk.gdk.SELECTION_CLIPBOARD)
@@ -46,11 +46,11 @@ class Clipboard(clipboard.AbstractClipboard):
 
 	def callback_clipboard(self, clipboard, text, data):
 		self.data["clipboard"] = text
-		self.notify_listeners("clipboard", text)
+		self.on_data_changed("clipboard", text)
 
 	def callback_primary(self, clipboard, text, data):
 		self.data["primary"] = text
-		self.notify_listeners("primary", text)
+		self.on_data_changed("primary", text)
 
 	def __owner_change_clipboard(self, clipboard, event, data=None):
 		self.selection["clipboard"].request_text(self.callback_clipboard)
