@@ -143,7 +143,7 @@ class AnamnesisDaemon(Daemon):
 
 	def clipboard_listener(self, text):
 		if text and self.last_clipboard != text:
-			self.logger.trace("clipboard listener [%s]" % text)
+			self.logger.info("clipboard listener [%s]" % text)
 			self.last_clipboard = text
 			self.database.insert(text)
 	
@@ -154,7 +154,7 @@ class AnamnesisDaemon(Daemon):
 	
 	def primary_listener(self, text):
 		if text and self.last_primary != text:
-			self.logger.trace("primary listener [%s]" % text)
+			self.logger.info("primary listener [%s]" % text)
 			self.last_primary = text
 			self.database.insert(text)
 		
