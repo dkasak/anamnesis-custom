@@ -2,7 +2,7 @@
 .\" groff -man -Tascii anamnesis.1
 .\"
 
-.TH ANAMNESIS 1 "JULY 2010"
+.TH ANAMNESIS 1 "DECEMBER 2010"
 
 .SH NAME
 
@@ -51,7 +51,7 @@ opens anamnesis browser with clipboard history
 
 .TP
 .B --cleanup
-performs a cleanup on the clipboard database
+optimize database and limit the number of elements
 
 .TP
 .B -l N, --list=N       
@@ -100,6 +100,16 @@ print only a brief version of long clipboard elements
 * python-xdg
 * python-gtk2
 * sqlite3
+
+
+.SH CONFIGURATION
+
+Anamnesis will search for configuration files in the $XDG_DATA_DIRS and
+$XDG_CONFIG_HOME directories. It defaults to:
+ 
+   /usr/share/anamnesis/anamnesis.cfg
+   ~/.config/anamnesis/anamnesis.cfg
+
 
 .SH AUTHOR
 

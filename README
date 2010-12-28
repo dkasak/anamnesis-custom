@@ -45,7 +45,7 @@ Options:
   --stop               stops anamnesis daemon
   --restart            restarts anamnesis daemon
   -b, --browser        opens anamnesis browser with clipboard history
-  --cleanup            performs a cleanup on the clipboard database
+  --cleanup            optimize database and limit the number of elements
   -l N, --list=N       prints the clipboard history last N values
   --filter=KEYWORDS    use keywords to filter the clips to be listed
   -a CLIP, --add=CLIP  adds a value to the clipboard
@@ -78,6 +78,14 @@ DEPENDENCIES
 * python-xdg
 * python-gtk2
 * sqlite3
+
+
+CONFIGURATION
+  Anamnesis will search for configuration files in the $XDG_DATA_DIRS and $XDG_CONFIG_HOME directories.
+  It defaults to:
+
+    /usr/share/anamnesis/anamnesis.cfg
+    ~/.config/anamnesis/anamnesis.cfg
 
 
 AUTHOR

@@ -22,7 +22,7 @@ import os, os.path
 from ConfigParser import RawConfigParser
 from xdg.BaseDirectory import *
 
-version = "Anamnesis version 1.0.4-dev"
+version = "Anamnesis version 1.0.4"
 
 cfg_filename = "anamnesis.cfg"
 cfg_subdir = "anamnesis"

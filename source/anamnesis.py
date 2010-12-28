@@ -38,7 +38,7 @@ help = {
   "add" : "adds a value to the clipboard",
   "remove" : "removes the clipboard element with the given id",
   "brief" : "print only a brief version of long clipboard elements",
-  "cleanup" : "performs a cleanup on the clipboard database",
+  "cleanup" : "optimize database and limit the number of elements",
   "quiet" : "don't print status messages to stdout"
 }
 
