@@ -1,4 +1,4 @@
-Version 1.0.4 - 2010-10-??
+Version 1.0.4 - 2011-01-03
 
 	* Refactoring, made it easier to change implementation for clipboard and database modules
 
@@ -8,9 +8,11 @@ Version 1.0.4 - 2010-10-??
 
 	* Added unit tests
 
+
 Version 1.0.3 - 2010-10-10
 
 	* Fixed bug with the '-a' option in the command line
+
 
 Version 1.0.2 - 2010-09-28
 
