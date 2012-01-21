@@ -89,8 +89,8 @@ elif options.cleanup:
 elif options.n:
 	n = options.n
 	
-	print ' id | clip'
-	print '-------------------'
+	print "%3s|%s" % ("id", "clip")
+	print '--------'
 	for clip in db.get_instance().search(n, options.keywords):
 		
 		if options.brief:
@@ -98,7 +98,7 @@ elif options.n:
 		else:
 			clip_text = clip[1]
 			
-		print clip[0], '|', clip_text
+		print "%3d|%s" % (clip[0], clip_text)
 
 else:
 	parser.print_help()
