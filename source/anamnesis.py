@@ -82,15 +82,15 @@ elif options.browser:
 	browser.main()
 
 elif options.cleanup:
-	print ("Performing database cleanup, this could take some time. Please wait...")
+	print "Performing database cleanup, this could take some time. Please wait..."
 	db.get_instance().cleanup()
-	print ("done.")
+	print "done."
 
 elif options.n:
 	n = options.n
 	
-	print (' id | clip')
-	print ('-------------------')
+	print ' id | clip'
+	print '-------------------'
 	for clip in db.get_instance().search(n, options.keywords):
 		
 		if options.brief:
@@ -98,7 +98,7 @@ elif options.n:
 		else:
 			clip_text = clip[1]
 			
-		print (clip[0], '|', clip_text)
+		print clip[0], '|', clip_text
 
 else:
 	parser.print_help()
