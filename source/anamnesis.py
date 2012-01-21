@@ -53,6 +53,7 @@ parser.add_option("--filter", action="store", type="string", dest="keywords", he
 parser.add_option("-a", "--add", action="store", type="string", dest="clip_to_add", help=help["add"])
 parser.add_option("--remove", action="store", type="int", dest="id_to_remove", help=help["remove"])
 parser.add_option("--brief", action="store_true", dest="brief", help=help["brief"])
+parser.set_defaults(n=10)
 
 (options, args) = parser.parse_args()
 
@@ -86,10 +87,7 @@ elif options.cleanup:
 	print ("done.")
 
 elif options.n:
-	if options.n:
-		n = options.n
-	else:
-		n = 10
+	n = options.n
 	
 	print (' id | clip')
 	print ('-------------------')
