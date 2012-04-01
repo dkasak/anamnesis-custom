@@ -88,17 +88,21 @@ elif options.cleanup:
 
 elif options.n:
 	n = options.n
-	
-	print "%3s|%s" % ("id", "clip")
+        db_instance = db.get_instance()
+        last_no = db_instance.search(1, options.keywords)
+        digits = len(str(last_no[0][0]))
+        digits = digits if digits >= 2 else 2
+
+	print "%*s|%s" % (digits, "id", "clip")
 	print '--------'
-	for clip in db.get_instance().search(n, options.keywords):
+	for clip in db_instance.search(n, options.keywords):
 		
 		if options.brief:
 			clip_text = ' '.join(clip[1][:config.max_rowtext_size].strip().splitlines())
 		else:
 			clip_text = clip[1]
 			
-		print "%3d|%s" % (clip[0], clip_text)
+		print "%*d|%s" % (digits, clip[0], clip_text)
 
 else:
 	parser.print_help()
