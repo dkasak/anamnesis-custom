@@ -94,7 +94,7 @@ elif options.n:
         digits = digits if digits >= 2 else 2
 
 	print "%*s|%s" % (digits, "id", "clip")
-	print '--------'
+	print '-' * (digits + 1 + len("clip"))
 	for clip in db_instance.search(n, options.keywords):
 		
 		if options.brief:
