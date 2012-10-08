@@ -90,19 +90,22 @@ elif options.n:
 	n = options.n
         db_instance = db.get_instance()
         last_no = db_instance.search(1, options.keywords)
-        digits = len(str(last_no[0][0]))
-        digits = digits if digits >= 2 else 2
+        if len(last_no) == 0:
+            print "Database empty!"
+        else:
+            digits = len(str(last_no[0][0]))
+            digits = digits if digits >= 2 else 2
 
-	print "%*s|%s" % (digits, "id", "clip")
-	print '-' * (digits + 1 + len("clip"))
-	for clip in db_instance.search(n, options.keywords):
-		
-		if options.brief:
-			clip_text = ' '.join(clip[1][:config.max_rowtext_size].strip().splitlines())
-		else:
-			clip_text = clip[1]
-			
-		print "%*d|%s" % (digits, clip[0], clip_text)
+            print "%*s|%s" % (digits, "id", "clip")
+            print '-' * (digits + 1 + len("clip"))
+            for clip in db_instance.search(n, options.keywords):
+                    
+                    if options.brief:
+                            clip_text = ' '.join(clip[1][:config.max_rowtext_size].strip().splitlines())
+                    else:
+                            clip_text = clip[1]
+                            
+                    print "%*d|%s" % (digits, clip[0], clip_text)
 
 else:
 	parser.print_help()
